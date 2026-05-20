@@ -3,315 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homework: Local Tips for Hoi An 🏮</title>
+<title>English Tutor Dashboard 🚀</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=pVaOHrtc"></script>
 <style>
 :root {
-    --bg: #Fcfaf8; --card: #ffffff; --brd: #e5e7eb; --text: #1f2937; 
-    --mut: #6b7280; --pri: #f43f5e; --sec: #0ea5e9; --suc: #10b981; --err: #ef4444; --warn: #f59e0b;
+    --bg: #Fcfaf8; 
+    --card: #ffffff; 
+    --brd: #e5e7eb; 
+    --text: #1f2937; 
+    --mut: #6b7280; 
+    --pri: #f43f5e; 
+    --sec: #0ea5e9; 
+    --suc: #10b981; 
+    --warn: #f59e0b;
 }
-html { font-size: 16px; }
-@media (min-width: 1024px) { html { font-size: 18px; } }
-@media (max-width: 768px) { html { font-size: 15px; } }
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6}
-::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px}
-button{cursor:pointer;transition:all .2s;font-family:inherit;border:none;outline:none}
-button:hover{opacity:.85;transform:translateY(-1px)}
-input, textarea{font-family:inherit;background:#f9fafb;border:1px solid var(--brd);color:var(--text);padding:1rem 1.2rem;border-radius:16px;width:100%;outline:none;font-size:1rem;resize:none}
-input:focus, textarea:focus{border-color:var(--sec);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
-.card{background:var(--card);border:1px solid var(--brd);border-radius:24px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 8px 30px rgba(0,0,0,0.03)}
-.sub-nav{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
-.sub-btn{padding:0.75rem 1.25rem;border-radius:12px;font-size:0.95rem;font-weight:600;background:var(--card);color:var(--mut);border:1px solid var(--brd);box-shadow:0 2px 5px rgba(0,0,0,0.02)}
-.sub-btn.active{background:rgba(14,165,233,.08);color:var(--sec);border-color:rgba(14,165,233,.3)}
-.opt{padding:1rem 1.25rem;border-radius:16px;border:1px solid var(--brd);background:#f9fafb;font-weight:600;width:100%;text-align:left;transition:all 0.2s;}
-.opt:hover{background:#f3f4f6}
-.ok{background:#ecfdf5!important;border-color:var(--suc)!important;color:#047857!important}
-.no{background:#fef2f2!important;border-color:var(--err)!important;color:#b91c1c!important}
-.game-card{background:var(--card);border:2px solid var(--brd);border-radius:16px;padding:1.25rem;text-align:center;font-weight:700;font-size:1.05rem;cursor:pointer;min-height:80px;display:flex;align-items:center;justify-content:center}
-.game-card.selected{border-color:var(--sec);background:rgba(14,165,233,.08);color:var(--sec)}
-.game-card.matched{opacity:0;pointer-events:none;transform:scale(0.9)}
-.fc-page-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--brd);background:var(--card);color:var(--mut);font-weight:700;display:flex;align-items:center;justify-content:center}
-.fc-page-btn.active{background:rgba(14,165,233,.1);color:var(--sec);border-color:rgba(14,165,233,.3)}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.dashboard-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+    color: var(--mut);
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.topic-card {
+    background: var(--card);
+    border: 1px solid var(--brd);
+    border-radius: 24px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    border-color: var(--sec);
+}
+
+.topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 6px; height: 100%;
+}
+
+.card-9::before { background: var(--pri); }
+.card-10::before { background: var(--warn); }
+.card-11::before { background: var(--sec); }
+.card-12::before { background: var(--suc); }
+
+.topic-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: #f9fafb;
+    width: 70px; height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+
+.topic-num {
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.card-9 .topic-num { color: var(--pri); }
+.card-10 .topic-num { color: var(--warn); }
+.card-11 .topic-num { color: var(--sec); }
+.card-12 .topic-num { color: var(--suc); }
+
+.topic-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+@media (max-width: 600px) {
+    .dashboard-header h1 { font-size: 2.2rem; }
+}
 </style>
 </head>
 <body>
-<div style="width:100%;max-width:1200px;margin:0 auto;padding:2rem 4%">
-    <div style="text-align:center;margin-bottom:2.5rem">
-        <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--text);margin-bottom:0.75rem">🏠 Homework: Hoi An Tips</h1>
-        <p style="color:var(--sec);font-size:1.1rem;font-weight:600">Tự luyện tập tại nhà - Topic 9</p>
+
+    <div class="dashboard-header">
+        <h1>Welcome Back! 📚</h1>
+        <p>Choose a topic to continue your learning journey.</p>
     </div>
-    <div id="app"></div>
-</div>
 
-<script>
-// --- DATA ---
-const V=[
-{id:1,en:"Do you have any tips for...?",vi:"Bạn có mẹo/lời khuyên gì cho... không?",ipa:"/duː juː hæv ˈɛni tɪps fɔːr/",ex:"Do you have any tips for us?"},
-{id:2,en:"That's a perfect choice!",vi:"Đó là một lựa chọn tuyệt vời!",ipa:"/ðæts ə ˈpɜːrfɪkt tʃɔɪs/",ex:"That's a perfect choice, Sarah!"},
-{id:3,en:"What about...?",vi:"Còn ... thì sao? / Thế còn ... ?",ipa:"/wɒt əˈbaʊt/",ex:"What about the Coconut Forest?"},
-{id:4,en:"Is it worth a visit?",vi:"Có đáng để ghé thăm không?",ipa:"/ɪz ɪt wɜːrθ ə ˈvɪzɪt/",ex:"What about the Thanh Ha Pottery Village? Is it worth a visit?"},
-{id:5,en:"Oh, and one more thing...",vi:"À, và còn một điều nữa...",ipa:"/oʊ ænd wʌn mɔːr θɪŋ/",ex:"Oh, and one more thing — we want to try some authentic food."},
-{id:6,en:"Don't be afraid of...",vi:"Đừng ngại/sợ...",ipa:"/doʊnt biː əˈfreɪd ɒv/",ex:"Don't be afraid of the small plastic stools!"},
-{id:7,en:"I'm getting used to...",vi:"Mình đang quen dần với...",ipa:"/aɪm ˈɡɛtɪŋ juːst tuː/",ex:"Haha, I'm getting used to that question now!"},
-{id:8,en:"I really appreciate...",vi:"Mình thực sự trân trọng/cảm kích...",ipa:"/aɪ ˈriːəli əˈpriːʃieɪt/",ex:"I really appreciate the local perspective."},
-{id:9,en:"My pleasure!",vi:"Mình rất vui được giúp! / Không có gì!",ipa:"/maɪ ˈplɛʒər/",ex:"My pleasure! Hoi An is about the small details."},
-{id:10,en:"Take it all in",vi:"Tận hưởng / Cảm nhận tất cả",ipa:"/teɪk ɪt ɔːl ɪn/",ex:"Just slow down and take it all in."}
-];
+    <div class="topic-grid">
+        <a href="topic9.html" class="topic-card card-9">
+            <div class="topic-icon">🏮</div>
+            <div class="topic-num">Topic 09</div>
+            <h2 class="topic-title">Local tips for Hoi An</h2>
+        </a>
 
-const storyLines = [
-  {en:"After our coffee at Trình, Sarah mentioned her family was heading to Hoi An for the weekend.", ipa:"/ˈæftər aʊər ˈkɔːfi æt Trinh, ˈsɛrə ˈmɛnʃənd hɜːr ˈfæməli wʌz ˈhɛdɪŋ tʊ Hɔi An fɔːr ðə ˈwikˌɛnd/", vi:"Sau buổi cà phê ở quán Trình, Sarah kể rằng gia đình cô sẽ đi Hội An cuối tuần này."},
-  {en:"She had already booked a place called Homestay Ồ! online, but she wanted some local advice.", ipa:"/ʃi hæd ɔlˈrɛdi bʊkt ə pleɪs kɔld Homestay O! ˈɔnˌlaɪn, bʌt ʃi ˈwɑntɪd sʌm ˈloʊkəl ædˈvaɪs/", vi:"Cô đã đặt chỗ ở Homestay Ồ! trên mạng, nhưng muốn xin vài lời khuyên từ người địa phương."},
-  {en:"Sarah: \"Rose, I've booked Homestay Ồ! for the weekend. The photos of the rice fields look amazing! Do you have any tips for us?\"", ipa:"/ˈsɛrə: Roʊz, aɪv bʊkt Homestay O! fɔːr ðə ˈwikˌɛnd. ðə ˈfoʊtoʊz ʌv ðə raɪs fildz lʊk əˈmeɪzɪŋ! du ju hæv ˈɛni tɪps fɔːr ʌs?/", vi:"Sarah: \"Rose, cô đã đặt Homestay Ồ! cho cuối tuần. Ảnh đồng lúa đẹp quá! Cháu có mẹo gì cho tụi cô không?\""},
-  {en:"Rose: \"That's a perfect choice, Sarah! Since you're staying in Hoi An, you should wake up early — around 6 AM.\"", ipa:"/Roʊz: ðæts ə ˈpɜrfɪkt tʃɔɪs, ˈsɛrə! sɪns jʊr ˈsteɪɪŋ ɪn Hɔi An, ju ʃʊd weɪk ʌp ˈɜrli — əˈraʊnd 6 eɪ-ɛm./", vi:"Rose: \"Đó là lựa chọn tuyệt vời ạ! Vì cô ở Hội An, cô nên dậy sớm — khoảng 6 giờ sáng.\""},
-  {en:"Rose: \"The air over the rice fields is so fresh, it's the best time for a mindful walk.\"", ipa:"/Roʊz: ðə ɛr ˈoʊvər ðə raɪs fildz ɪz soʊ frɛʃ, ɪts ðə bɛst taɪm fɔːr ə ˈmaɪndfəl wɔk./", vi:"Rose: \"Không khí trên đồng lúa rất trong lành, đó là lúc tốt nhất để đi bộ thư thái.\""},
-  {en:"Sarah: \"6 AM? That sounds early, but I'll try! What about the Coconut Forest?\"", ipa:"/ˈsɛrə: 6 eɪ-ɛm? ðæt saʊndz ˈɜrli, bʌt aɪl traɪ! wʌt əˈbaʊt ðə ˈkoʊkəˌnʌt ˈfɔrɪst?/", vi:"Sarah: \"6 giờ sáng? Nghe sớm quá, nhưng cô sẽ thử! Thế còn rừng dừa Bảy Mẫu thì sao?\""},
-  {en:"Rose: \"My tip is: don't go in the afternoon. Go early in the morning or just before sunset.\"", ipa:"/Roʊz: maɪ tɪp ɪz: doʊnt goʊ ɪn ði ˌæftərˈnun. goʊ ˈɜrli ɪn ðə ˈmɔrnɪŋ ɔr dʒʌst bɪˈfɔr ˈsʌnˌsɛt./", vi:"Rose: \"Mẹo của cháu là: đừng đi vào buổi chiều. Hãy đi sáng sớm hoặc ngay trước lúc hoàng hôn.\""},
-  {en:"Sarah: \"That's exactly what we need. And what about the Thanh Ha Pottery Village? Is it worth a visit?\"", ipa:"/ˈsɛrə: ðæts ɪgˈzæktli wʌt wi nid. ænd wʌt əˈbaʊt ðə Thanh Ha ˈpɑtəri ˈvɪlɪdʒ? ɪz ɪt wɜrθ ə ˈvɪzɪt?/", vi:"Sarah: \"Đúng thứ cô cần. Thế còn Làng gốm Thanh Hà? Có đáng ghé thăm không?\""},
-  {en:"Rose: \"Definitely! You should sit down and try making a small clay whistle or a bowl. It's very meditative.\"", ipa:"/Roʊz: ˈdɛfənətli! ju ʃʊd sɪt daʊn ænd traɪ ˈmeɪkɪŋ ə smɔl kleɪ ˈwɪsəl ɔr ə boʊl. ɪts ˈvɛri ˈmɛdəˌteɪtɪv./", vi:"Rose: \"Chắc chắn rồi ạ! Cô nên ngồi xuống và thử làm một chiếc còi đất sét hoặc cái bát. Rất thiền ạ.\""},
-  {en:"Sarah: \"Oh, and one more thing — we want to try some authentic food, not just the tourist menus.\"", ipa:"/ˈsɛrə: oʊ, ænd wʌn mɔr θɪŋ — wi wɑnt tʊ traɪ sʌm ɔˈθɛntɪk fud, nɑt dʒʌst ðə ˈtʊrɪst ˈmɛnjuz./", vi:"Sarah: \"À, và còn một điều nữa — tụi cô muốn thử đồ ăn bản địa thực sự, không phải thực đơn du lịch.\""},
-  {en:"Rose: \"Then you have to try 'Cơm Gà' or 'Cao Lầu' in the local market. Don't be afraid of the small plastic stools!\"", ipa:"/Roʊz: ðɛn ju hæv tʊ traɪ Cơm Gà ɔr Cao Lầu ɪn ðə ˈloʊkəl ˈmɑrkɪt. Doʊnt bi əˈfreɪd ʌv ðə smɔl ˈplæstɪk stulz!/", vi:"Rose: \"Vậy cô phải thử Cơm Gà hoặc Cao Lầu ở chợ địa phương. Đừng ngại những chiếc ghế nhựa nhỏ nhé!\""},
-  {en:"Rose: \"If you’re not sure about the price, you can still use: 'Bao nhiêu tiền?'\"", ipa:"/ɪf jʊr nɑt ʃʊr əˈbaʊt ðə praɪs, ju kæn stɪl juːz: 'Bao nhiêu tiền?'/", vi:"Rose: \"Nếu cô không chắc về giá, cô vẫn có thể dùng: 'Bao nhiêu tiền?'\""},
-  {en:"Sarah: \"Haha, I'm getting used to that question now! Thanks, Rose. I really appreciate the local perspective.\"", ipa:"/ˈsɛrə: hɑhɑ, aɪm ˈgɛtɪŋ juzd tʊ ðæt ˈkwɛstʃən naʊ! θæŋks, Roʊz. aɪ ˈrɪli əˈpriʃiˌeɪt ðə ˈloʊkəl pərˈspɛktɪv./", vi:"Sarah: \"Haha, cô đang dần quen với câu hỏi đó rồi! Cảm ơn Rose. Cô thực sự trân trọng góc nhìn của người địa phương.\""},
-  {en:"Rose: \"My pleasure! Hoi An is about the small details. Just slow down and take it all in.\"", ipa:"/Roʊz: maɪ ˈplɛʒər! Hɔi An ɪz əˈbaʊt ðə smɔl dɪˈteɪlz. dʒʌst sloʊ daʊn ænd teɪk ɪt ɔl ɪn./", vi:"Rose: \"Không có gì ạ! Hội An là về những chi tiết nhỏ. Cứ chậm lại và tận hưởng tất cả.\""},
-  {en:"I was glad I could give Sarah some \"insider\" advice.", ipa:"/aɪ wʌz glæd aɪ kʊd gɪv ˈsɛrə sʌm ɪnˈsaɪdər ædˈvaɪs./", vi:"Tôi rất vui vì có thể cho Sarah vài lời khuyên của người \"trong cuộc\"."},
-  {en:"In a place as famous as Hoi An, it’s easy to get lost in the crowds.", ipa:"/ɪn ə pleɪs æz ˈfeɪməs æz Hɔi An, ɪts ˈizi tʊ gɛt lɔst ɪn ðə kraʊdz./", vi:"Ở một nơi nổi tiếng như Hội An, người ta rất dễ bị lạc lõng trong đám đông."},
-  {en:"By sharing these small tips, I hoped she could find those quiet, peaceful moments that make a trip truly meaningful.", ipa:"/baɪ ˈʃɛrɪŋ ðiz smɔl tɪps, aɪ hoʊpt ʃi kʊd faɪnd ðoʊz ˈkwaɪət, ˈpisfəl ˈmoʊmənts ðæt meɪk ə trɪp ˈtruli ˈminɪŋfəl./", vi:"Bằng cách chia sẻ những mẹo nhỏ này, tôi hy vọng cô ấy có thể tìm thấy những khoảnh khắc tĩnh lặng, yên bình làm cho chuyến đi trở nên thực sự ý nghĩa."}
-];
+        <a href="topic10.html" class="topic-card card-10">
+            <div class="topic-icon">🛵</div>
+            <div class="topic-num">Topic 10</div>
+            <h2 class="topic-title">The road to Hue</h2>
+        </a>
 
-// --- SETUP ---
-let tab = 'flashcard'; 
-let fcM='flip', fi=0, fcFlip=false, qO=[], qFb=null, tV='', tFb=null;
-let fcRec=false, fcAudioUrl=null, fcStream=null, fcMR=null, fcChunks=[];
-let dicIdx=0, dicVal='', dicFb=null, dicHint=false;
-let shIdx=0, shRec=false, shAudioUrl=null, shStream=null, shMR=null, shChunks=[];
-let chalIdx=0, chalVal='', chalFb=null, chalHint=false;
-let gameCards=[], gameSelected=[], gameMatched=[];
+        <a href="topic11.html" class="topic-card card-11">
+            <div class="topic-icon">🍜</div>
+            <div class="topic-num">Topic 11</div>
+            <h2 class="topic-title">A mindful diner & city lights</h2>
+        </a>
 
-let bv=null;function ldv(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();if(!vs.length)return;['Microsoft Aria Online','Google US English','Samantha','Microsoft Zira'].some(p=>{const f=vs.find(x=>x.name.includes(p));if(f){bv=f;return true}});if(!bv)bv=vs.find(x=>x.lang==='en-US')||vs[0]}
-if('speechSynthesis' in window){ldv();speechSynthesis.onvoiceschanged=ldv}
-function say(t,r=0.9){if(!t)return;if(window.responsiveVoice&&responsiveVoice.voiceSupport()){responsiveVoice.cancel();responsiveVoice.speak(t.trim(),'US English Female',{rate:r,pitch:1.05});return}if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.trim());u.lang='en-US';u.rate=r;if(bv)u.voice=bv;speechSynthesis.speak(u)}}
-function esc(s){return s.replace(/'/g,"\\'")}
-function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
-function norm(s){return(s||'').trim().toLowerCase().replace(/[.,!?;:'"…\-()\/\\]/g,'').replace(/\s+/g,' ')}
-function genHintText(text) {
-    return text.split(' ').map(w => {
-        let match = w.match(/^([a-zA-ZÀ-ỹ])(.*)/);
-        if(match) return match[1] + match[2].replace(/[a-zA-ZÀ-ỹ]/g, '_');
-        return w;
-    }).join(' ');
-}
+        <a href="topic12.html" class="topic-card card-12">
+            <div class="topic-icon">👋</div>
+            <div class="topic-num">Topic 12</div>
+            <h2 class="topic-title">A bittersweet farewell</h2>
+        </a>
+    </div>
 
-function initGame(){
-    const pool = [...V].sort(()=>Math.random()-.5).slice(0, 6);
-    let cards = [];
-    pool.forEach(v=>{cards.push({id:v.id, type:'en', text:v.en}); cards.push({id:v.id, type:'vi', text:v.vi});});
-    gameCards = cards.sort(()=>Math.random()-.5);
-    gameSelected = []; gameMatched = [];
-}
-initGame();
-function gQ(){const w=V[fi]; qO=shuffle([w,...shuffle(V.filter(x=>x.id!==w.id)).slice(0,3)]); qFb=null;}
-
-// --- RENDER ---
-function R(){
-    const app=document.getElementById('app');
-    let html = `
-        <div class="sub-nav">
-            <button class="sub-btn ${tab==='flashcard'?'active':''}" onclick="tab='flashcard';R()">1. Flashcard</button>
-            <button class="sub-btn ${tab==='dictation'?'active':''}" onclick="tab='dictation';R()">2. Dictation</button>
-            <button class="sub-btn ${tab==='shadowing'?'active':''}" onclick="tab='shadowing';R()">3. Shadowing</button>
-            <button class="sub-btn ${tab==='challenge'?'active':''}" onclick="tab='challenge';R()">4. IPA Challenge</button>
-            <button class="sub-btn ${tab==='game'?'active':''}" onclick="tab='game';R()">5. Game</button>
-        </div>
-    `;
-
-    if(tab === 'flashcard'){
-        const w = V[fi];
-        const ms=[{k:'flip',l:'🃏 Lật thẻ'},{k:'quiz',l:'📝 Trắc nghiệm'},{k:'type',l:'⌨️ Gõ từ'},{k:'say',l:'🔊 Phát âm'}];
-        const mi=ms.findIndex(m=>m.k===fcM);
-        
-        html += `<div class="card" style="padding:1.5rem">
-            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
-                ${ms.map((_,i)=>`<div style="flex:1;height:6px;border-radius:3px;background:${i<=mi?'var(--pri)':'var(--brd)'}"></div>`).join('')}
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center">
-                <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-                    ${ms.map(m=>`<button onclick="fcM='${m.k}';fi=0;fcFlip=false;qFb=null;tFb=null;tV='';fcAudioUrl=null;if(m.k==='quiz')gQ();R()" class="sub-btn ${fcM===m.k?'active':''}">${m.l}</button>`).join('')}
-                </div>
-                <span style="color:var(--mut);font-size:1.1rem;font-weight:800">${fi+1}/${V.length}</span>
-            </div>
-        </div>`;
-
-        if(fcM === 'flip'){
-            html += `<div class="card" onclick="fcFlip=!fcFlip;if(fcFlip)say('${esc(w.en)}');R()" style="min-height:400px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:${fcFlip?'rgba(244,63,94,.02)':'#ffffff'};border:2px solid ${fcFlip?'rgba(244,63,94,.15)':'var(--brd)'}">
-                ${!fcFlip ? `<div style="font-size:2.2rem;font-weight:800;margin-bottom:1rem;text-align:center">${w.en}</div><div style="font-size:1.2rem;color:var(--mut);font-family:monospace">${w.ipa}</div><div style="position:absolute;bottom:2rem;color:var(--sec);font-size:1.1rem;font-weight:700">Bấm để lật thẻ 👆</div>` : `<div style="font-size:1.8rem;font-weight:800;color:var(--pri);margin-bottom:0.75rem;text-align:center">${w.en}</div><div style="font-size:1.3rem;margin-bottom:1.5rem;font-weight:700">${w.vi}</div><div style="font-size:1.1rem;color:var(--mut);font-style:italic;text-align:center;margin-bottom:2rem;max-width:80%">"${w.ex}"</div><button onclick="event.stopPropagation();say('${esc(w.en)}')" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800;font-size:1.1rem">🔊 Nghe phát âm</button>`}
-            </div>
-            <button onclick="if(fi<V.length-1){fi++;fcFlip=false;R()}else{fcM='quiz';fi=0;gQ();R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'→ Chuyển sang Trắc nghiệm'}</button>`;
-        }
-        else if(fcM === 'quiz'){
-            if(!qO.length) gQ();
-            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Chọn nghĩa đúng nhất:</div>
-                <div style="font-size:2rem;font-weight:800;margin-bottom:2.5rem">${w.en}</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                    ${qO.map(o=>`<button onclick="qFb=${o.id===w.id?1:0};setTimeout(()=>{if(fi<V.length-1){fi++;qFb=null;gQ()}else{fcM='type';fi=0;qFb=null};R()},1200);R()" class="opt ${qFb!==null?(o.id===w.id?'ok':(qFb===0?'no':'')):''}" ${qFb!==null?'disabled':''}>${o.vi}</button>`).join('')}
-                </div>
-                ${qFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${qFb?'#ecfdf5':'#fef2f2'};color:${qFb?'var(--suc)':'var(--err)'};font-weight:800">${qFb?'✅ Tuyệt vời!':'❌ Đáp án: '+w.vi}</div>` : ''}
-            </div>`;
-        }
-        else if(fcM === 'type'){
-            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Nghe và gõ lại từ vựng:</div>
-                <div style="font-size:1.8rem;font-weight:800;color:var(--sec);margin-bottom:1.5rem">${w.vi}</div>
-                <button onclick="say('${esc(w.en)}')" style="padding:1rem 2.5rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800;margin-bottom:2.5rem">🔊 Nghe đọc</button>
-                <div style="display:flex;gap:1rem;max-width:500px;margin:0 auto">
-                    <input id="fcTypeInp" value="${tV}" placeholder="Gõ tiếng Anh..." onkeydown="if(event.key==='Enter')chkFcType()">
-                    <button onclick="chkFcType()" style="padding:1rem 2rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800">Check</button>
-                </div>
-                ${tFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${tFb?'#ecfdf5':'#fef2f2'};color:${tFb?'var(--suc)':'var(--err)'};font-weight:800">${tFb?'✅ Chuẩn xác!':'❌ Đáp án: '+w.en}</div>` : ''}
-            </div>`;
-        }
-        else if(fcM === 'say'){
-            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-                <div style="font-size:2.2rem;font-weight:800;margin-bottom:0.75rem">${w.en}</div>
-                <div style="font-size:1.2rem;color:var(--mut);font-family:monospace;margin-bottom:1rem">${w.ipa}</div>
-                <div style="font-size:1.2rem;color:var(--pri);font-weight:700;margin-bottom:2.5rem">${w.vi}</div>
-                <div style="margin-bottom:2.5rem">
-                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.25rem;font-weight:800">① Lắng nghe giọng chuẩn</div>
-                    <div style="display:flex;gap:1rem;justify-content:center">
-                        <button onclick="say('${esc(w.en)}', 0.7)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 0.7x</button>
-                        <button onclick="say('${esc(w.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 1.0x</button>
-                    </div>
-                </div>
-                <div style="padding-top:2.5rem;border-top:2px dashed var(--brd)">
-                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.5rem;font-weight:800">② Ghi âm giọng của bạn</div>
-                    <button onclick="fcMic()" style="padding:1.25rem 3rem;border-radius:20px;font-weight:800;font-size:1.2rem;color:#fff;background:${fcRec?'var(--err)':'var(--sec)'};box-shadow:${fcRec?'0 0 25px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
-                        ${fcRec?'⏹️ Dừng ghi âm':'🎙️ Bấm để nói'}
-                    </button>
-                    ${fcAudioUrl && !fcRec ? `<div style="margin-top:2rem"><button onclick="new Audio('${fcAudioUrl}').play()" style="padding:1rem 2.5rem;border-radius:16px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại</button></div>`:''}
-                </div>
-            </div>
-            <button onclick="fcAudioUrl=null;if(fi<V.length-1){fi++;R()}else{fi=0;R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'✅ Hoàn thành Topic!'}</button>`;
-        }
-        html += `<div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-top:1.5rem">
-            ${V.map((_,i)=>`<button onclick="fi=${i};fcFlip=false;qFb=null;tFb=null;tV='';fcAudioUrl=null;if(fcM==='quiz')gQ();R()" class="fc-page-btn ${i===fi?'active':''}">${i+1}</button>`).join('')}
-        </div>`;
-    }
-
-    else if(tab === 'dictation'){
-        const line = storyLines[dicIdx];
-        const hintString = genHintText(line.en);
-        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-            <h2 style="font-size:1.8rem;color:var(--sec);margin-bottom:0.75rem">✍️ Dictation</h2>
-            <p style="color:var(--mut);margin-bottom:2.5rem">Lắng nghe và gõ lại trọn vẹn câu tiếng Anh.</p>
-            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2.5rem">
-                <button onclick="say('${esc(line.en)}', 0.8)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 Nghe chậm (0.8x)</button>
-                <button onclick="say('${esc(line.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 Nghe chuẩn (1.0x)</button>
-            </div>
-            <div style="max-width:800px;margin:0 auto">
-                ${dicHint ? `<div style="margin-bottom:1.5rem;color:var(--sec);font-family:monospace;font-weight:700;background:rgba(14,165,233,.08);padding:1rem;border-radius:12px;letter-spacing:2px">💡 ${hintString}</div>` : `<button onclick="dicHint=true;R()" class="sub-btn" style="margin: 0 auto 1.5rem auto">💡 Bật gợi ý</button>`}
-                <textarea id="dicInput" rows="3" placeholder="Gõ lại câu tiếng Anh bạn nghe được vào đây..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkDic()}">${dicVal}</textarea>
-                <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
-                    <button onclick="checkDic()" style="padding:1rem 3rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(14,165,233,.3)">Check</button>
-                </div>
-            </div>
-            ${dicFb!==null?`<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${dicFb?'#ecfdf5':'#fef2f2'};color:${dicFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${dicFb?'✅ Xuất sắc! Bạn gõ đúng rồi!':'❌ Chưa khớp. Đáp án là:<br><span style="color:var(--text);font-weight:600;display:inline-block;margin-top:1rem;font-size:1.3rem">"'+line.en+'"</span>'}</div>`:''}
-            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
-                <button onclick="if(dicIdx>0){dicIdx--;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">← Câu trước</button>
-                <span style="align-self:center;color:var(--mut);font-weight:800">${dicIdx+1} / ${storyLines.length}</span>
-                <button onclick="if(dicIdx<storyLines.length-1){dicIdx++;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">Câu sau →</button>
-            </div>
-        </div>`;
-    }
-    
-    else if(tab === 'shadowing'){
-        const line = storyLines[shIdx];
-        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-            <h2 style="font-size:1.8rem;color:var(--pri);margin-bottom:0.75rem">🗣️ Shadowing</h2>
-            <p style="color:var(--mut);margin-bottom:2.5rem">Tập trung bắt chước âm thanh và ngữ điệu.</p>
-            <div style="margin-bottom:3rem;max-width:800px;margin-left:auto;margin-right:auto">
-                <div style="font-size:1.4rem;color:var(--mut);font-family:monospace;background:#f0f9ff;display:inline-block;padding:1rem 2rem;border-radius:16px;border:2px dashed rgba(14,165,233,.3)">${line.ipa}</div>
-            </div>
-            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:3rem">
-                <button onclick="say('${esc(line.en)}', 0.8)" style="padding:1.25rem 2.5rem;border-radius:20px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 Nghe chậm (0.8x)</button>
-                <button onclick="say('${esc(line.en)}', 1.0)" style="padding:1.25rem 2.5rem;border-radius:20px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 Nghe chuẩn (1.0x)</button>
-            </div>
-            <div style="padding-top:3rem;border-top:2px dashed var(--brd)">
-                <button onclick="shMic()" style="padding:1.5rem 4rem;border-radius:24px;font-weight:800;font-size:1.3rem;color:#fff;background:${shRec?'var(--err)':'var(--sec)'};box-shadow:${shRec?'0 0 30px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
-                    ${shRec?'⏹️ Đang ghi âm... Bấm để dừng':'🎙️ Ghi âm giọng của bạn'}
-                </button>
-                ${shAudioUrl && !shRec ? `<div style="margin-top:2.5rem"><button onclick="new Audio('${shAudioUrl}').play()" style="padding:1.25rem 3rem;border-radius:20px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại bản ghi của bạn</button></div>`:''}
-            </div>
-            <div style="margin-top:4rem;display:flex;justify-content:center;gap:1.5rem">
-                <button onclick="if(shIdx>0){shIdx--;shAudioUrl=null;R()}" class="sub-btn">← Câu trước</button>
-                <span style="align-self:center;color:var(--mut);font-weight:800">${shIdx+1} / ${storyLines.length}</span>
-                <button onclick="if(shIdx<storyLines.length-1){shIdx++;shAudioUrl=null;R()}" class="sub-btn">Câu sau →</button>
-            </div>
-        </div>`;
-    }
-
-    else if(tab === 'challenge'){
-        const line = storyLines[chalIdx];
-        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-            <h2 style="font-size:1.8rem;color:var(--warn);margin-bottom:0.75rem">🏆 IPA Challenge</h2>
-            <p style="color:var(--mut);margin-bottom:2.5rem">Đọc phiên âm IPA và gõ lại câu tiếng Anh chính xác.</p>
-            
-            <div style="margin-bottom:2.5rem;max-width:800px;margin-left:auto;margin-right:auto">
-                <div style="font-size:1.4rem;color:var(--pri);font-family:monospace;background:#fff5f5;display:inline-block;padding:1.5rem 2rem;border-radius:16px;border:2px dashed rgba(244,63,94,.3);line-height:1.6;word-break:break-word">
-                    ${line.ipa}
-                </div>
-            </div>
-
-            <div style="max-width:800px;margin:0 auto">
-                ${chalHint ? `<div style="margin-bottom:1.5rem;color:var(--sec);font-weight:700;background:rgba(14,165,233,.08);padding:1rem;border-radius:12px;">💡 Nghĩa tiếng Việt: ${line.vi}</div>` : `<button onclick="chalHint=true;R()" class="sub-btn" style="margin: 0 auto 1.5rem auto">💡 Xem nghĩa tiếng Việt</button>`}
-                
-                <textarea id="chalInput" rows="3" placeholder="Gõ câu tiếng Anh vào đây..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkChal()}">${chalVal}</textarea>
-                
-                <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
-                    <button onclick="checkChal()" style="padding:1rem 3rem;border-radius:16px;background:var(--warn);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(245,158,11,.3)">Check</button>
-                </div>
-            </div>
-            
-            ${chalFb!==null?`<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${chalFb?'#ecfdf5':'#fef2f2'};color:${chalFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${chalFb?'✅ Chính xác tuyệt đối!':'❌ Chưa khớp. Đáp án là:<br><span style="color:var(--text);font-weight:600;display:inline-block;margin-top:1rem;font-size:1.3rem">"'+line.en+'"</span>'}</div>`:''}
-            
-            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
-                <button onclick="if(chalIdx>0){chalIdx--;chalFb=null;chalVal='';chalHint=false;R()}" class="sub-btn">← Câu trước</button>
-                <span style="align-self:center;color:var(--mut);font-weight:800">${chalIdx+1} / ${storyLines.length}</span>
-                <button onclick="if(chalIdx<storyLines.length-1){chalIdx++;chalFb=null;chalVal='';chalHint=false;R()}" class="sub-btn">Câu sau →</button>
-            </div>
-        </div>`;
-    }
-    
-    else if(tab === 'game'){
-        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
-                <h2 style="font-size:1.8rem;color:var(--sec);font-weight:800">🎮 Matching Game</h2>
-                <button onclick="initGame();R()" class="sub-btn">🔄 Chơi lại</button>
-            </div>
-            <p style="color:var(--mut);margin-bottom:2.5rem">Ghép nối đúng từ tiếng Anh với nghĩa tiếng Việt!</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:1.25rem">
-                ${gameCards.map((c, i)=>`<div onclick="handleGameClick(${i})" class="game-card ${gameSelected.includes(i)?'selected':''} ${gameMatched.includes(i)?'matched':''}">${c.text}</div>`).join('')}
-            </div>
-            ${gameMatched.length === gameCards.length ? `<div style="margin-top:3rem;padding:2rem;background:#ecfdf5;border-radius:24px;color:#047857;font-weight:800;font-size:1.5rem">🎉 Tuyệt vời! Bạn đã hoàn thành!</div>` : ''}
-        </div>`;
-    }
-    
-    app.innerHTML = html;
-    
-    if(tab === 'flashcard' && fcM === 'type') document.getElementById('fcTypeInp')?.focus();
-    if(tab === 'dictation') document.getElementById('dicInput')?.focus();
-    if(tab === 'challenge') document.getElementById('chalInput')?.focus();
-}
-
-function chkFcType(){const i = document.getElementById('fcTypeInp'); tV = i ? i.value : ''; tFb = norm(tV) === norm(V[fi].en); setTimeout(()=>{if(tFb){if(fi<V.length-1){fi++; tFb=null; tV=''; R()}else{fcM='say'; fi=0; tFb=null; tV=''; R()}}}, 1200); R();}
-function fcMic(){if(fcRec){if(fcMR && fcMR.state==='recording') fcMR.stop(); if(fcStream) fcStream.getTracks().forEach(t=>t.stop()); fcRec = false; R(); return;} fcAudioUrl = null; fcChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{fcStream = stream; const mr = new MediaRecorder(stream); fcMR = mr; mr.ondataavailable = e => { if(e.data.size>0) fcChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(fcChunks, {type:'audio/webm'}); fcAudioUrl = URL.createObjectURL(blob); fcStream?.getTracks().forEach(t=>t.stop()); fcStream = null; fcMR = null; R();}; mr.start(); fcRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); fcRec=false; R();});}
-function checkDic(){const inp = document.getElementById('dicInput'); dicVal = inp ? inp.value : ''; dicFb = norm(dicVal) === norm(storyLines[dicIdx].en); R();}
-function checkChal(){const inp = document.getElementById('chalInput'); chalVal = inp ? inp.value : ''; chalFb = norm(chalVal) === norm(storyLines[chalIdx].en); R();}
-function shMic(){if(shRec){if(shMR && shMR.state==='recording') shMR.stop(); if(shStream) shStream.getTracks().forEach(t=>t.stop()); shRec = false; R(); return;} shAudioUrl = null; shChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{shStream = stream; const mr = new MediaRecorder(stream); shMR = mr; mr.ondataavailable = e => { if(e.data.size>0) shChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(shChunks, {type:'audio/webm'}); shAudioUrl = URL.createObjectURL(blob); shStream?.getTracks().forEach(t=>t.stop()); shStream = null; shMR = null; R();}; mr.start(); shRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); shRec=false; R();});}
-function handleGameClick(idx){if(gameMatched.includes(idx) || gameSelected.includes(idx)) return; gameSelected.push(idx); R(); if(gameSelected.length === 2){const [i1, i2] = gameSelected; const c1 = gameCards[i1], c2 = gameCards[i2]; setTimeout(()=>{if(c1.id === c2.id && c1.type !== c2.type){gameMatched.push(i1, i2); if(c1.type === 'en') say(c1.text); else say(c2.text);} gameSelected = []; R();}, 600);}}
-
-R();
-</script>
 </body>
 </html>
