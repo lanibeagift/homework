@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework: The Road to Hue 🛤️</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=pVaOHrtc"></script>
+<style>
+:root {
+    --bg: #Fcfaf8; --card: #ffffff; --brd: #e5e7eb; --text: #1f2937; 
+    --mut: #6b7280; --pri: #f43f5e; --sec: #0ea5e9; --suc: #10b981; --err: #ef4444; --warn: #f59e0b;
+}
+html { font-size: 16px; }
+@media (min-width: 1024px) { html { font-size: 18px; } }
+@media (max-width: 768px) { html { font-size: 15px; } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px}
+button{cursor:pointer;transition:all .2s;font-family:inherit;border:none;outline:none}
+button:hover{opacity:.85;transform:translateY(-1px)}
+input, textarea{font-family:inherit;background:#f9fafb;border:1px solid var(--brd);color:var(--text);padding:1rem 1.2rem;border-radius:16px;width:100%;outline:none;font-size:1rem;resize:none}
+input:focus, textarea:focus{border-color:var(--sec);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:24px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 8px 30px rgba(0,0,0,0.03)}
+.sub-nav{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
+.sub-btn{padding:0.75rem 1.25rem;border-radius:12px;font-size:0.95rem;font-weight:600;background:var(--card);color:var(--mut);border:1px solid var(--brd);box-shadow:0 2px 5px rgba(0,0,0,0.02)}
+.sub-btn.active{background:rgba(14,165,233,.08);color:var(--sec);border-color:rgba(14,165,233,.3)}
+.opt{padding:1rem 1.25rem;border-radius:16px;border:1px solid var(--brd);background:#f9fafb;font-weight:600;width:100%;text-align:left;transition:all 0.2s;}
+.opt:hover{background:#f3f4f6}
+.ok{background:#ecfdf5!important;border-color:var(--suc)!important;color:#047857!important}
+.no{background:#fef2f2!important;border-color:var(--err)!important;color:#b91c1c!important}
+.game-card{background:var(--card);border:2px solid var(--brd);border-radius:16px;padding:1.25rem;text-align:center;font-weight:700;font-size:1.05rem;cursor:pointer;min-height:80px;display:flex;align-items:center;justify-content:center}
+.game-card.selected{border-color:var(--sec);background:rgba(14,165,233,.08);color:var(--sec)}
+.game-card.matched{opacity:0;pointer-events:none;transform:scale(0.9)}
+.fc-page-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--brd);background:var(--card);color:var(--mut);font-weight:700;display:flex;align-items:center;justify-content:center}
+.fc-page-btn.active{background:rgba(14,165,233,.1);color:var(--sec);border-color:rgba(14,165,233,.3)}
+.exp-box {margin-top:0.75rem; padding:1rem; border-radius:12px; font-weight:600; font-size:0.95rem; display:none;}
+.exp-box.show {display:block;}
+.exp-ok {background:#f0fdf4; color:#166534; border:1px solid #bbf7d0;}
+.exp-no {background:#fff1f2; color:#9f1239; border:1px solid #fecdd3;}
+</style>
+</head>
+<body>
+<div style="width:100%;max-width:1200px;margin:0 auto;padding:2rem 4%">
+    <div style="text-align:center;margin-bottom:2.5rem">
+        <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--text);margin-bottom:0.75rem">🏠 Homework: The Road to Hue</h1>
+        <p style="color:var(--sec);font-size:1.1rem;font-weight:600">Tự luyện tập tại nhà - Topic 10</p>
+    </div>
+    <div id="app"></div>
+</div>
+
+<script>
+// --- DATA ---
+const V=[
+{id:1,en:"such a blast",vi:"cực kỳ vui / tuyệt vời",ipa:"/sʌtʃ ə blæst/",ex:"Hoi An was such a blast!"},
+{id:2,en:"head out to",vi:"di chuyển đến / lên đường đi",ipa:"/hɛd aʊt tuː/",ex:"We're planning to head out to Hue."},
+{id:3,en:"What's the best way to...?",vi:"Cách tốt nhất để... là gì?",ipa:"/wɒts ðə bɛst weɪ tuː/",ex:"What's the best way to get there?"},
+{id:4,en:"I'd stick with",vi:"Mình sẽ chọn / giữ nguyên",ipa:"/aɪd stɪk wɪð/",ex:"I'd stick with a car or the train."},
+{id:5,en:"look into",vi:"tìm hiểu / nghiên cứu thêm",ipa:"/lʊk ˈɪntuː/",ex:"You might want to look into a motorbike tour."},
+{id:6,en:"quite an adventure",vi:"cả một cuộc phiêu lưu",ipa:"/kwaɪt ən ədˈvɛntʃər/",ex:"That sounds like quite an adventure!"},
+{id:7,en:"Could you pull over here?",vi:"Anh/chị dừng xe ở đây được không?",ipa:"/kʊd juː pʊl ˈoʊvər hɪr/",ex:"Could you pull over here for a second?"},
+{id:8,en:"just a heads-up",vi:"báo trước một chút / lưu ý nhé",ipa:"/dʒʌst ə hɛdz ʌp/",ex:"Just a heads-up, the road is pretty windy."},
+{id:9,en:"totally worth it",vi:"hoàn toàn xứng đáng",ipa:"/ˈtoʊtəli wɜːrθ ɪt/",ex:"For that view, it's totally worth it!"},
+{id:10,en:"the journey itself",vi:"chính cuộc hành trình",ipa:"/ðə ˈdʒɜːrni ɪtˈsɛlf/",ex:"Sometimes, the journey itself is the best gift of all."}
+];
+
+const storyLines = [
+  {en:"A few days after Sarah got back from Hoi An, we caught up again.", vi:"Vài ngày sau khi Sarah về từ Hội An, tụi mình gặp lại.", ipa:"/ə fju deɪz ˈæftər ˈsɛrə gɑt bæk frʌm Hɔi An, wi kɔt ʌp əˈgɛn/"},
+  {en:"She was so thrilled about the pottery village that she was eager to see more of Central Vietnam.", vi:"Cô ấy rất phấn khích về làng gốm và háo hức muốn khám phá thêm miền Trung.", ipa:"/ʃi wʌz soʊ θrɪld əˈbaʊt ðə ˈpɑtəri ˈvɪlɪdʒ ðæt ʃi wʌz ˈigər tʊ si mɔr ʌv ˈsɛntrəl ˌviɛtˈnɑm/"},
+  {en:"Her next stop was Hue, the ancient capital.", vi:"Điểm đến tiếp theo là Huế, cố đô.", ipa:"/hɜr nɛkst stɑp wʌz Hue, ði ˈeɪnʃənt ˈkæpətəl/"},
+  {en:"Sarah: \"Rose, Hoi An was such a blast!\"", vi:"Sarah: \"Rose, Hội An cực kỳ vui!\"", ipa:"/ˈsɛrə: Roʊz, Hɔi An wʌz sʌtʃ ə blæst!/"},
+  {en:"Sarah: \"The kids are still playing with those clay whistles.\"", vi:"Sarah: \"Mấy đứa nhỏ vẫn còn chơi mấy cái còi đất.\"", ipa:"/ˈsɛrə: ðə kɪdz ɑr stɪl ˈpleɪɪŋ wɪð ðoʊz kleɪ ˈwɪsəlz/"},
+  {en:"Sarah: \"Now, we're planning to head out to Hue.\"", vi:"Sarah: \"Giờ tụi cô dự định lên đường đi Huế.\"", ipa:"/ˈsɛrə: naʊ, wɪr ˈplænɪŋ tʊ hɛd aʊt tʊ Hue/"},
+  {en:"Sarah: \"What's the best way to get there?\"", vi:"Sarah: \"Cách tốt nhất để đến đó là gì?\"", ipa:"/ˈsɛrə: wɑts ðə bɛst weɪ tʊ gɛt ðɛr/"},
+  {en:"Rose: \"I'm so glad to hear that!\"", vi:"Rose: \"Cháu vui quá khi nghe vậy!\"", ipa:"/Roʊz: aɪm soʊ glæd tʊ hir ðæt!/"},
+  {en:"Rose: \"You've got a few options: the train, a private car, or even a sleeper bus.\"", vi:"Rose: \"Cô có vài lựa chọn: tàu hỏa, xe riêng, hoặc xe giường nằm.\"", ipa:"/Roʊz: juv gɑt ə fju ˈɑpʃənz: ðə treɪn, ə ˈpraɪvət kɑr, ɔr ˈivɪn ə ˈslipər bʌs/"},
+  {en:"Rose: \"But since you're traveling with the family and want to catch the views, I'd stick with a car or the train.\"", vi:"Rose: \"Nhưng vì cô đi cùng gia đình và muốn ngắm cảnh, cháu nghĩ cô nên chọn xe riêng hoặc tàu.\"", ipa:"/Roʊz: bʌt sɪns jʊr ˈtrævəlɪŋ wɪð ðə ˈfæməli ænd wɑnt tʊ kætʃ ðə vjuz, aɪd stɪk wɪð ə kɑr ɔr ðə treɪn/"},
+  {en:"Sarah: \"I've heard the mountain pass is stunning.\"", vi:"Sarah: \"Cô nghe nói đèo rất đẹp.\"", ipa:"/ˈsɛrə: aɪv hɜrd ðə ˈmaʊntən pæs ɪz ˈstʌnɪŋ/"},
+  {en:"Sarah: \"Is it doable by motorbike?\"", vi:"Sarah: \"Đi xe máy được không?\"", ipa:"/ˈsɛrə: ɪz ɪt ˈduəbəl baɪ ˈmoʊtərˌbaɪk/"},
+  {en:"Rose: \"Actually, a lot of travelers love doing that!\"", vi:"Rose: \"Thực ra nhiều du khách thích lắm ạ!\"", ipa:"/Roʊz: ˈækʧuəli, ə lɑt ʌv ˈtrævələrz lʌv ˈduɪŋ ðæt!/"},
+  {en:"Rose: \"It's the best way to feel the breeze and see the Hai Van Pass up close.\"", vi:"Rose: \"Đó là cách tốt nhất để đón gió và nhìn đèo Hải Vân gần hơn.\"", ipa:"/Roʊz: ɪts ðə bɛst weɪ tʊ fil ðə briz ænd si ðə Hai Van pæs ʌp kloʊs/"},
+  {en:"Rose: \"But with the kids, you might want to look into a motorbike tour with professional drivers.\"", vi:"Rose: \"Nhưng với mấy đứa nhỏ, cô nên tìm hiểu tour xe máy có tài xế chuyên nghiệp.\"", ipa:"/Roʊz: bʌt wɪð ðə kɪdz, ju maɪt wɑnt tʊ lʊk ˈɪntu ə ˈmoʊtərˌbaɪk tʊr wɪð prəˈfɛʃənəl ˈdraɪvərz/"},
+  {en:"Rose: \"We call them 'Easy Riders'.\"", vi:"Rose: \"Tụi mình gọi là Easy Riders.\"", ipa:"/Roʊz: wi kɔl ðɛm ˈizi ˈraɪdərz/"},
+  {en:"Sarah: \"That sounds like quite an adventure!\"", vi:"Sarah: \"Nghe giống cả một cuộc phiêu lưu!\"", ipa:"/ˈsɛrə: ðæt saʊndz laɪk kwaɪt ən ædˈvɛnʧər!/"},
+  {en:"Sarah: \"But we'll probably just stick with a car this time so the kids can nap.\"", vi:"Sarah: \"Nhưng lần này chắc tụi cô đi xe riêng để mấy đứa nhỏ ngủ được.\"", ipa:"/ˈsɛrə: bʌt wil ˈprɑbəbli dʒʌst stɪk wɪð ə kɑr ðɪs taɪm soʊ ðə kɪdz kæn næp/"},
+  {en:"Sarah: \"How do I ask the driver to pull over for a photo?\"", vi:"Sarah: \"Cô muốn dừng xe chụp hình thì nói sao?\"", ipa:"/ˈsɛrə: haʊ du aɪ æsk ðə ˈdraɪvər tʊ pʊl ˈoʊvər fɔr ə ˈfoʊtoʊ/"},
+  {en:"Rose: \"Just tell him: 'Could you pull over here for a second?'\"", vi:"Rose: \"Cô chỉ cần nói: 'Anh dừng xe ở đây một lát được không?'\"", ipa:"/Roʊz: dʒʌst tɛl hɪm: kʊd ju pʊl ˈoʊvər hir fɔr ə ˈsɛkənd/"},
+  {en:"Rose: \"They're very used to it.\"", vi:"Rose: \"Mấy anh tài xế quen lắm rồi.\"", ipa:"/Roʊz: ðɛr ˈvɛri juzd tʊ ɪt/"},
+  {en:"Rose: \"But just a heads-up, the road is pretty windy.\"", vi:"Rose: \"Nhưng báo trước một chút, đường khá ngoằn ngoèo.\"", ipa:"/Roʊz: bʌt dʒʌst ə hɛdz-ʌp, ðə roʊd ɪz ˈprɪti ˈwaɪndi/"},
+  {en:"Rose: \"Do you get motion sickness?\"", vi:"Rose: \"Cô có bị say xe không?\"", ipa:"/Roʊz: du ju gɛt ˈmoʊʃən ˈsɪknəs/"},
+  {en:"Sarah: \"A little bit, but for that view, it's totally worth it!\"", vi:"Sarah: \"Hơi hơi, nhưng với cảnh đẹp vậy thì hoàn toàn xứng đáng!\"", ipa:"/ˈsɛrə: ə ˈlɪtəl bɪt, bʌt fɔr ðæt vju, ɪts ˈtoʊtəli wɜrθ ɪt!/"},
+  {en:"Sarah: \"'Could you pull over here...?' Got it!\"", vi:"Sarah: \"'Anh dừng xe ở đây...' Hiểu rồi!\"", ipa:"/ˈsɛrə: kʊd ju pʊl ˈoʊvər hir... gɑt ɪt!/"},
+  {en:"Rose: \"Great! It's a gorgeous drive.\"", vi:"Rose: \"Tuyệt! Đoạn đường rất đẹp.\"", ipa:"/Roʊz: greɪt! ɪts ə ˈgɔrdʒəs draɪv/"},
+  {en:"Rose: \"You'll pass by Bach Ma National Park and Lang Co Bay too.\"", vi:"Rose: \"Cô sẽ đi qua Vườn quốc gia Bạch Mã và vịnh Lăng Cô nữa.\"", ipa:"/Roʊz: jul pæs baɪ Bach Ma ˈnæʃənəl pɑrk ænd Lang Co beɪ tu/"},
+  {en:"Rose: \"You're going to love the royal vibe in Hue.\"", vi:"Rose: \"Cô sẽ thích không khí hoàng gia ở Huế.\"", ipa:"/Roʊz: jʊr ˈgoʊɪŋ tʊ lʌv ðə ˈrɔɪəl vaɪb ɪn Hue/"},
+  {en:"Helping Sarah plan her trip made me realize that travel isn't just about the destination.", vi:"Giúp Sarah lên kế hoạch chuyến đi làm tôi nhận ra du lịch không chỉ là điểm đến.", ipa:"/ˈhɛlpɪŋ ˈsɛrə plæn hɜr trɪp meɪd mi ˈriəˌlaɪz ðæt ˈtrævəl ˈɪzənt dʒʌst əˈbaʊt ðə ˌdɛstəˈneɪʃən/"},
+  {en:"It's about the beauty we find along the way.", vi:"Mà là vẻ đẹp ta tìm thấy trên đường đi.", ipa:"/ɪts əˈbaʊt ðə ˈbjuti wi faɪnd əˈlɔŋ ðə weɪ/"},
+  {en:"Sometimes, the journey itself is the best gift of all.", vi:"Đôi khi, chính cuộc hành trình là món quà tuyệt vời nhất.", ipa:"/ˈsʌmˌtaɪmz, ðə ˈdʒɜrni ɪtˈsɛlf ɪz ðə bɛst gɪft ʌv ɔl/"}
+];
+
+const PQ = [
+  {q:"Từ <b style='color:var(--sec)'>'options'</b> có âm cuối -s được phát âm là gì?", o:["/s/", "/z/", "/ɪz/"], a:1, exp:"💡 Sau âm /n/ (option), đuôi 's' được phát âm là <b>/z/</b>."},
+  {q:"Từ <b style='color:var(--sec)'>'drivers'</b> có âm cuối -s được phát âm là gì?", o:["/s/", "/z/", "/ɪz/"], a:1, exp:"💡 Sau âm /r/ (driver), đuôi 's' được phát âm là <b>/z/</b>."},
+  {q:"Cụm từ <b style='color:var(--sec)'>'pull over'</b> có hiện tượng nối âm như thế nào?", o:["/pʊl/ /ˈoʊvər/ (Không nối âm)", "/pʊl‿ˈoʊvər/ (Nối phụ âm cuối /l/ với nguyên âm đầu /oʊ/)"], a:1, exp:"💡 Phụ âm cuối /l/ của từ 'pull' nối thẳng với nguyên âm đầu /oʊ/ của từ 'over'."},
+  {q:"Câu hỏi <b style='color:var(--sec)'>'Do you get motion sickness?'</b> có ngữ điệu như thế nào?", o:["Lên giọng ở cuối câu (↗)", "Xuống giọng ở cuối câu (↘)", "Giữ âm bằng đều (→)"], a:0, exp:"💡 Câu hỏi Yes/No thường <b>lên giọng ở cuối câu (↗)</b> để thể hiện sự tò mò."},
+  {q:"Câu <b style='color:var(--sec)'>'Could you pull over here for a second?'</b> có ngữ điệu như thế nào?", o:["Lên giọng ở cuối câu (↗)", "Xuống giọng ở cuối câu (↘)"], a:0, exp:"💡 Câu yêu cầu lịch sự dạng Yes/No thường <b>lên giọng ở cuối câu (↗)</b> để tạo cảm giác thân thiện."}
+];
+
+const KSQ = [
+  {q:"Để hỏi 'Cách tốt nhất để đến Huế là gì?', bạn dùng câu nào?", o:["What's the best way get to Hue?", "What's the best way to get to Hue?", "How is best way to get to Hue?"], a:1, exp:"💡 Cấu trúc chuẩn: <b>What's the best way to + V?</b> (Cách tốt nhất để làm gì đó là gì?)"},
+  {q:"Cụm từ nào dùng để dặn trước/báo trước ai đó một điều gì?", o:["just a heads-up", "just a head-up", "just the head-ups"], a:0, exp:"💡 Thành ngữ đúng là: <b>just a heads-up</b> (một lời nhắc nhở trước, báo trước)."},
+  {q:"Để yêu cầu tài xế tấp xe vào lề, bạn dùng câu nào?", o:["Could you pull over here?", "Could you stop over here?", "Could you pull out here?"], a:0, exp:"💡 Động từ khuyết thiếu <b>pull over</b> mang nghĩa 'tấp xe vào lề/dừng xe bên đường'."},
+  {q:"Câu 'Tôi sẽ chọn đi xe riêng' được nói như thế nào cho tự nhiên?", o:["I'd stick to a private car.", "I'd stick with a private car.", "I'd stick in a private car."], a:1, exp:"💡 Cấu trúc: <b>stick with + Noun</b> (giữ nguyên lựa chọn, tiếp tục dùng/chọn cái gì)."}
+];
+
+// --- SETUP ---
+let tab = 'flashcard'; 
+let fcM='flip', fi=0, fcFlip=false, qO=[], qFb=null, tV='', tFb=null;
+let fcRec=false, fcAudioUrl=null, fcStream=null, fcMR=null, fcChunks=[];
+let dicIdx=0, dicVal='', dicFb=null, dicHint=false;
+let shIdx=0, shRec=false, shAudioUrl=null, shStream=null, shMR=null, shChunks=[];
+let chalIdx=0, chalVal='', chalFb=null, chalHint=false;
+let gameCards=[], gameSelected=[], gameMatched=[];
+let pqA={}, ksqA={};
+
+let bv=null;function ldv(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();if(!vs.length)return;['Microsoft Aria Online','Google US English','Samantha','Microsoft Zira'].some(p=>{const f=vs.find(x=>x.name.includes(p));if(f){bv=f;return true}});if(!bv)bv=vs.find(x=>x.lang==='en-US')||vs[0]}
+if('speechSynthesis' in window){ldv();speechSynthesis.onvoiceschanged=ldv}
+function say(t,r=0.9){if(!t)return;if(window.responsiveVoice&&responsiveVoice.voiceSupport()){responsiveVoice.cancel();responsiveVoice.speak(t.trim(),'US English Female',{rate:r,pitch:1.05});return}if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.trim());u.lang='en-US';u.rate=r;if(bv)u.voice=bv;speechSynthesis.speak(u)}}
+function esc(s){return s.replace(/'/g,"\\'")}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function norm(s){return(s||'').trim().toLowerCase().replace(/[.,!?;:'"…\-()\/\\]/g,'').replace(/\s+/g,' ')}
+function genHintText(text) {
+    return text.split(' ').map(w => {
+        let match = w.match(/^([a-zA-ZÀ-ỹ])(.*)/);
+        if(match) return match[1] + match[2].replace(/[a-zA-ZÀ-ỹ]/g, '_');
+        return w;
+    }).join(' ');
+}
+
+function initGame(){
+    const pool = [...V].sort(()=>Math.random()-.5).slice(0, 6);
+    let cards = [];
+    pool.forEach(v=>{cards.push({id:v.id, type:'en', text:v.en}); cards.push({id:v.id, type:'vi', text:v.vi});});
+    gameCards = cards.sort(()=>Math.random()-.5);
+    gameSelected = []; gameMatched = [];
+}
+initGame();
+function gQ(){const w=V[fi]; qO=shuffle([w,...shuffle(V.filter(x=>x.id!==w.id)).slice(0,3)]); qFb=null;}
+
+// --- RENDER ---
+function R(){
+    const app=document.getElementById('app');
+    let html = `
+        <div class="sub-nav">
+            <button class="sub-btn ${tab==='flashcard'?'active':''}" onclick="tab='flashcard';R()">1. Flashcard</button>
+            <button class="sub-btn ${tab==='dictation'?'active':''}" onclick="tab='dictation';R()">2. Dictation</button>
+            <button class="sub-btn ${tab==='shadowing'?'active':''}" onclick="tab='shadowing';R()">3. Shadowing</button>
+            <button class="sub-btn ${tab==='challenge'?'active':''}" onclick="tab='challenge';R()">4. IPA Challenge</button>
+            <button class="sub-btn ${tab==='exercise'?'active':''}" onclick="tab='exercise';R()">5. Exercises</button>
+            <button class="sub-btn ${tab==='game'?'active':''}" onclick="tab='game';R()">6. Game</button>
+        </div>
+    `;
+
+    if(tab === 'flashcard'){
+        const w = V[fi];
+        const ms=[{k:'flip',l:'🃏 Lật thẻ'},{k:'quiz',l:'📝 Trắc nghiệm'},{k:'type',l:'⌨️ Gõ từ'},{k:'say',l:'🔊 Phát âm'}];
+        const mi=ms.findIndex(m=>m.k===fcM);
+        
+        html += `<div class="card" style="padding:1.5rem">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+                ${ms.map((_,i)=>`<div style="flex:1;height:6px;border-radius:3px;background:${i<=mi?'var(--pri)':'var(--brd)'}"></div>`).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+                    ${ms.map(m=>`<button onclick="fcM='${m.k}';fi=0;fcFlip=false;qFb=null;tFb=null;tV='';fcAudioUrl=null;if(m.k==='quiz')gQ();R()" class="sub-btn ${fcM===m.k?'active':''}">${m.l}</button>`).join('')}
+                </div>
+                <span style="color:var(--mut);font-size:1.1rem;font-weight:800">${fi+1}/${V.length}</span>
+            </div>
+        </div>`;
+
+        if(fcM === 'flip'){
+            html += `<div class="card" onclick="fcFlip=!fcFlip;if(fcFlip)say('${esc(w.en)}');R()" style="min-height:400px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:${fcFlip?'rgba(244,63,94,.02)':'#ffffff'};border:2px solid ${fcFlip?'rgba(244,63,94,.15)':'var(--brd)'}">
+                ${!fcFlip ? `<div style="font-size:2.2rem;font-weight:800;margin-bottom:1rem;text-align:center">${w.en}</div><div style="font-size:1.2rem;color:var(--mut);font-family:monospace">${w.ipa}</div><div style="position:absolute;bottom:2rem;color:var(--sec);font-size:1.1rem;font-weight:700">Bấm để lật thẻ 👆</div>` : `<div style="font-size:1.8rem;font-weight:800;color:var(--pri);margin-bottom:0.75rem;text-align:center">${w.en}</div><div style="font-size:1.3rem;margin-bottom:1.5rem;font-weight:700">${w.vi}</div><div style="font-size:1.1rem;color:var(--mut);font-style:italic;text-align:center;margin-bottom:2rem;max-width:80%">"${w.ex}"</div><button onclick="event.stopPropagation();say('${esc(w.en)}')" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800;font-size:1.1rem">🔊 Nghe phát âm</button>`}
+            </div>
+            <button onclick="if(fi<V.length-1){fi++;fcFlip=false;R()}else{fcM='quiz';fi=0;gQ();R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'→ Chuyển sang Trắc nghiệm'}</button>`;
+        }
+        else if(fcM === 'quiz'){
+            if(!qO.length) gQ();
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Chọn nghĩa đúng nhất:</div>
+                <div style="font-size:2rem;font-weight:800;margin-bottom:2.5rem">${w.en}</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    ${qO.map(o=>`<button onclick="qFb=${o.id===w.id?1:0};setTimeout(()=>{if(fi<V.length-1){fi++;qFb=null;gQ()}else{fcM='type';fi=0;qFb=null};R()},1200);R()" class="opt ${qFb!==null?(o.id===w.id?'ok':(qFb===0?'no':'')):''}" ${qFb!==null?'disabled':''}>${o.vi}</button>`).join('')}
+                </div>
+                ${qFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${qFb?'#ecfdf5':'#fef2f2'};color:${qFb?'var(--suc)':'var(--err)'};font-weight:800">${qFb?'✅ Tuyệt vời!':'❌ Đáp án: '+w.vi}</div>` : ''}
+            </div>`;
+        }
+        else if(fcM === 'type'){
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Nghe và gõ lại từ vựng:</div>
+                <div style="font-size:1.8rem;font-weight:800;color:var(--sec);margin-bottom:1.5rem">${w.vi}</div>
+                <button onclick="say('${esc(w.en)}')" style="padding:1rem 2.5rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800;margin-bottom:2.5rem">🔊 Nghe đọc</button>
+                <div style="display:flex;gap:1rem;max-width:500px;margin:0 auto">
+                    <input id="fcTypeInp" value="${tV}" placeholder="Gõ tiếng Anh..." onkeydown="if(event.key==='Enter')chkFcType()">
+                    <button onclick="chkFcType()" style="padding:1rem 2rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800">Check</button>
+                </div>
+                ${tFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${tFb?'#ecfdf5':'#fef2f2'};color:${tFb?'var(--suc)':'var(--err)'};font-weight:800">${tFb?'✅ Chuẩn xác!':'❌ Đáp án: '+w.en}</div>` : ''}
+            </div>`;
+        }
+        else if(fcM === 'say'){
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="font-size:2.2rem;font-weight:800;margin-bottom:0.75rem">${w.en}</div>
+                <div style="font-size:1.2rem;color:var(--mut);font-family:monospace;margin-bottom:1rem">${w.ipa}</div>
+                <div style="font-size:1.2rem;color:var(--pri);font-weight:700;margin-bottom:2.5rem">${w.vi}</div>
+                <div style="margin-bottom:2.5rem">
+                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.25rem;font-weight:800">① Lắng nghe giọng chuẩn</div>
+                    <div style="display:flex;gap:1rem;justify-content:center">
+                        <button onclick="say('${esc(w.en)}', 0.7)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 0.7x</button>
+                        <button onclick="say('${esc(w.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 1.0x</button>
+                    </div>
+                </div>
+                <div style="padding-top:2.5rem;border-top:2px dashed var(--brd)">
+                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.5rem;font-weight:800">② Ghi âm giọng của bạn</div>
+                    <button onclick="fcMic()" style="padding:1.25rem 3rem;border-radius:20px;font-weight:800;font-size:1.2rem;color:#fff;background:${fcRec?'var(--err)':'var(--sec)'};box-shadow:${fcRec?'0 0 25px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
+                        ${fcRec?'⏹️ Dừng ghi âm':'🎙️ Bấm để nói'}
+                    </button>
+                    ${fcAudioUrl && !fcRec ? `<div style="margin-top:2rem"><button onclick="new Audio('${fcAudioUrl}').play()" style="padding:1rem 2.5rem;border-radius:16px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại</button></div>`:''}
+                </div>
+            </div>
+            <button onclick="fcAudioUrl=null;if(fi<V.length-1){fi++;R()}else{fi=0;R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'✅ Hoàn thành Topic!'}</button>`;
+        }
+        html += `<div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-top:1.5rem">
+            ${V.map((_,i)=>`<button onclick="fi=${i};fcFlip=false;qFb=null;tFb=null;tV='';fcAudioUrl=null;if(fcM==='quiz')gQ();R()" class="fc-page-btn ${i===fi?'active':''}">${i+1}</button>`).join('')}
+        </div>`;
+    }
+
+    else if(tab === 'dictation'){
+        const line = storyLines[dicIdx];
+        const hintString = genHintText(line.en);
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <h2 style="font-size:1.8rem;color:var(--sec);margin-bottom:0.75rem">✍️ Dictation</h2>
+            <p style="color:var(--mut);margin-bottom:2.5rem">Lắng nghe và gõ lại trọn vẹn câu tiếng Anh.</p>
+            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2.5rem">
+                <button onclick="say('${esc(line.en)}', 0.8)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 Nghe chậm (0.8x)</button>
+                <button onclick="say('${esc(line.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 Nghe chuẩn (1.0x)</button>
+            </div>
+            <div style="max-width:800px;margin:0 auto">
+                ${dicHint ? `<div style="margin-bottom:1.5rem;color:var(--sec);font-family:monospace;font-weight:700;background:rgba(14,165,233,.08);padding:1rem;border-radius:12px;letter-spacing:2px">💡 ${hintString}</div>` : `<button onclick="dicHint=true;R()" class="sub-btn" style="margin: 0 auto 1.5rem auto">💡 Bật gợi ý</button>`}
+                <textarea id="dicInput" rows="3" placeholder="Gõ lại câu tiếng Anh bạn nghe được vào đây..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkDic()}">${dicVal}</textarea>
+                <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
+                    <button onclick="checkDic()" style="padding:1rem 3rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(14,165,233,.3)">Check</button>
+                </div>
+            </div>
+            ${dicFb!==null?`<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${dicFb?'#ecfdf5':'#fef2f2'};color:${dicFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${dicFb?'✅ Xuất sắc! Bạn gõ đúng rồi!':'❌ Chưa khớp. Đáp án là:<br><span style="color:var(--text);font-weight:600;display:inline-block;margin-top:1rem;font-size:1.3rem">"'+line.en+'"</span>'}</div>`:''}
+            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(dicIdx>0){dicIdx--;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">← Câu trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${dicIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(dicIdx<storyLines.length-1){dicIdx++;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">Câu sau →</button>
+            </div>
+        </div>`;
+    }
+    
+    else if(tab === 'shadowing'){
+        const line = storyLines[shIdx];
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <h2 style="font-size:1.8rem;color:var(--pri);margin-bottom:0.75rem">🗣️ Shadowing</h2>
+            <p style="color:var(--mut);margin-bottom:2.5rem">Tập trung bắt chước âm thanh và ngữ điệu.</p>
+            <div style="margin-bottom:3rem;max-width:800px;margin-left:auto;margin-right:auto">
+                <div style="font-size:1.4rem;color:var(--mut);font-family:monospace;background:#f0f9ff;display:inline-block;padding:1rem 2rem;border-radius:16px;border:2px dashed rgba(14,165,233,.3)">${line.ipa}</div>
+            </div>
+            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:3rem">
+                <button onclick="say('${esc(line.en)}', 0.8)" style="padding:1.25rem 2.5rem;border-radius:20px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 Nghe chậm (0.8x)</button>
+                <button onclick="say('${esc(line.en)}', 1.0)" style="padding:1.25rem 2.5rem;border-radius:20px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 Nghe chuẩn (1.0x)</button>
+            </div>
+            <div style="padding-top:3rem;border-top:2px dashed var(--brd)">
+                <button onclick="shMic()" style="padding:1.5rem 4rem;border-radius:24px;font-weight:800;font-size:1.3rem;color:#fff;background:${shRec?'var(--err)':'var(--sec)'};box-shadow:${shRec?'0 0 30px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
+                    ${shRec?'⏹️ Đang ghi âm... Bấm để dừng':'🎙️ Ghi âm giọng của bạn'}
+                </button>
+                ${shAudioUrl && !shRec ? `<div style="margin-top:2.5rem"><button onclick="new Audio('${shAudioUrl}').play()" style="padding:1.25rem 3rem;border-radius:20px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại bản ghi của bạn</button></div>`:''}
+            </div>
+            <div style="margin-top:4rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(shIdx>0){shIdx--;shAudioUrl=null;R()}" class="sub-btn">← Câu trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${shIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(shIdx<storyLines.length-1){shIdx++;shAudioUrl=null;R()}" class="sub-btn">Câu sau →</button>
+            </div>
+        </div>`;
+    }
+
+    else if(tab === 'challenge'){
+        const line = storyLines[chalIdx];
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <h2 style="font-size:1.8rem;color:var(--warn);margin-bottom:0.75rem">🏆 IPA Challenge</h2>
+            <p style="color:var(--mut);margin-bottom:2.5rem">Đọc phiên âm IPA và gõ lại câu tiếng Anh chính xác.</p>
+            
+            <div style="margin-bottom:2.5rem;max-width:800px;margin-left:auto;margin-right:auto">
+                <div style="font-size:1.4rem;color:var(--pri);font-family:monospace;background:#fff5f5;display:inline-block;padding:1.5rem 2rem;border-radius:16px;border:2px dashed rgba(244,63,94,.3);line-height:1.6;word-break:break-word">
+                    ${line.ipa}
+                </div>
+            </div>
+
+            <div style="max-width:800px;margin:0 auto">
+                ${chalHint ? `<div style="margin-bottom:1.5rem;color:var(--sec);font-weight:700;background:rgba(14,165,233,.08);padding:1rem;border-radius:12px;">💡 Nghĩa tiếng Việt: ${line.vi}</div>` : `<button onclick="chalHint=true;R()" class="sub-btn" style="margin: 0 auto 1.5rem auto">💡 Xem nghĩa tiếng Việt</button>`}
+                
+                <textarea id="chalInput" rows="3" placeholder="Gõ câu tiếng Anh vào đây..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkChal()}">${chalVal}</textarea>
+                
+                <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
+                    <button onclick="checkChal()" style="padding:1rem 3rem;border-radius:16px;background:var(--warn);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(245,158,11,.3)">Check</button>
+                </div>
+            </div>
+            
+            ${chalFb!==null?`<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${chalFb?'#ecfdf5':'#fef2f2'};color:${chalFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${chalFb?'✅ Chính xác tuyệt đối!':'❌ Chưa khớp. Đáp án là:<br><span style="color:var(--text);font-weight:600;display:inline-block;margin-top:1rem;font-size:1.3rem">"'+line.en+'"</span>'}</div>`:''}
+            
+            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(chalIdx>0){chalIdx--;chalFb=null;chalVal='';chalHint=false;R()}" class="sub-btn">← Câu trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${chalIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(chalIdx<storyLines.length-1){chalIdx++;chalFb=null;chalVal='';chalHint=false;R()}" class="sub-btn">Câu sau →</button>
+            </div>
+        </div>`;
+    }
+
+    else if(tab === 'exercise'){
+        html += `
+        <div class="card">
+            <div style="text-align:center;margin-bottom:2.5rem">
+                <h1 style="color:var(--sec);font-size:2.2rem">📝 Practice Exercises</h1>
+                <p style="color:var(--mut);font-size:1.1rem">Ôn tập lại phần Phát âm và Cấu trúc đã học trên lớp.</p>
+            </div>
+
+            <h2 style="color:var(--warn);font-size:1.6rem;margin-bottom:1.5rem;border-bottom:2px solid var(--brd);padding-bottom:0.5rem">Phần 1: Pronunciation Check</h2>
+            ${PQ.map((q, i) => `
+                <div style="margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px dashed var(--brd)">
+                    <p style="font-weight:800; font-size:1.15rem; margin-bottom:1rem">${i+1}. ${q.q}</p>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; max-width:700px;">
+                        ${q.o.map((opt, oi) => `
+                            <button class="opt ${pqA[i] !== undefined ? (oi === q.a ? 'ok' : (pqA[i] === oi ? 'no' : '')) : ''}" 
+                                    ${pqA[i] !== undefined ? 'disabled' : ''} 
+                                    onclick="pqA[${i}]=${oi};R()">
+                                ${String.fromCharCode(65+oi)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="exp-box ${pqA[i] !== undefined ? 'show' : ''} ${pqA[i] === q.a ? 'exp-ok' : 'exp-no'}">
+                        ${pqA[i] === q.a ? '✅ Đúng rồi! ' : '❌ Sai rồi! '}${q.exp}
+                    </div>
+                </div>
+            `).join('')}
+
+            <h2 style="color:var(--pri);font-size:1.6rem;margin-top:3rem;margin-bottom:1.5rem;border-bottom:2px solid var(--brd);padding-bottom:0.5rem">Phần 2: Key Structures Check</h2>
+            ${KSQ.map((q, i) => `
+                <div style="margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px dashed var(--brd)">
+                    <p style="font-weight:800; font-size:1.15rem; margin-bottom:1rem">${i+1}. ${q.q}</p>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; max-width:700px;">
+                        ${q.o.map((opt, oi) => `
+                            <button class="opt ${ksqA[i] !== undefined ? (oi === q.a ? 'ok' : (ksqA[i] === oi ? 'no' : '')) : ''}" 
+                                    ${ksqA[i] !== undefined ? 'disabled' : ''} 
+                                    onclick="ksqA[${i}]=${oi};R()">
+                                ${String.fromCharCode(65+oi)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="exp-box ${ksqA[i] !== undefined ? 'show' : ''} ${ksqA[i] === q.a ? 'exp-ok' : 'exp-no'}">
+                        ${ksqA[i] === q.a ? '✅ Chính xác! ' : '❌ Sai rồi! '}${q.exp}
+                    </div>
+                </div>
+            `).join('')}
+
+            <div style="text-align:right">
+                <button onclick="pqA={}; ksqA={}; R()" class="sub-btn" style="padding:1rem 2rem; font-size:1rem; margin-top:1rem">🔄 Làm lại tất cả bài tập</button>
+            </div>
+        </div>`;
+    }
+    
+    else if(tab === 'game'){
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                <h2 style="font-size:1.8rem;color:var(--sec);font-weight:800">🎮 Matching Game</h2>
+                <button onclick="initGame();R()" class="sub-btn">🔄 Chơi lại</button>
+            </div>
+            <p style="color:var(--mut);margin-bottom:2.5rem">Ghép nối đúng từ tiếng Anh với nghĩa tiếng Việt!</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:1.25rem">
+                ${gameCards.map((c, i)=>`<div onclick="handleGameClick(${i})" class="game-card ${gameSelected.includes(i)?'selected':''} ${gameMatched.includes(i)?'matched':''}">${c.text}</div>`).join('')}
+            </div>
+            ${gameMatched.length === gameCards.length ? `<div style="margin-top:3rem;padding:2rem;background:#ecfdf5;border-radius:24px;color:#047857;font-weight:800;font-size:1.5rem">🎉 Tuyệt vời! Bạn đã hoàn thành!</div>` : ''}
+        </div>`;
+    }
+    
+    app.innerHTML = html;
+    
+    if(tab === 'flashcard' && fcM === 'type') document.getElementById('fcTypeInp')?.focus();
+    if(tab === 'dictation') document.getElementById('dicInput')?.focus();
+    if(tab === 'challenge') document.getElementById('chalInput')?.focus();
+}
+
+function chkFcType(){const i = document.getElementById('fcTypeInp'); tV = i ? i.value : ''; tFb = norm(tV) === norm(V[fi].en); setTimeout(()=>{if(tFb){if(fi<V.length-1){fi++; tFb=null; tV=''; R()}else{fcM='say'; fi=0; tFb=null; tV=''; R()}}}, 1200); R();}
+function fcMic(){if(fcRec){if(fcMR && fcMR.state==='recording') fcMR.stop(); if(fcStream) fcStream.getTracks().forEach(t=>t.stop()); fcRec = false; R(); return;} fcAudioUrl = null; fcChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{fcStream = stream; const mr = new MediaRecorder(stream); fcMR = mr; mr.ondataavailable = e => { if(e.data.size>0) fcChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(fcChunks, {type:'audio/webm'}); fcAudioUrl = URL.createObjectURL(blob); fcStream?.getTracks().forEach(t=>t.stop()); fcStream = null; fcMR = null; R();}; mr.start(); fcRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); fcRec=false; R();});}
+function checkDic(){const inp = document.getElementById('dicInput'); dicVal = inp ? inp.value : ''; dicFb = norm(dicVal) === norm(storyLines[dicIdx].en); R();}
+function checkChal(){const inp = document.getElementById('chalInput'); chalVal = inp ? inp.value : ''; chalFb = norm(chalVal) === norm(storyLines[chalIdx].en); R();}
+function shMic(){if(shRec){if(shMR && shMR.state==='recording') shMR.stop(); if(shStream) shStream.getTracks().forEach(t=>t.stop()); shRec = false; R(); return;} shAudioUrl = null; shChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{shStream = stream; const mr = new MediaRecorder(stream); shMR = mr; mr.ondataavailable = e => { if(e.data.size>0) shChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(shChunks, {type:'audio/webm'}); shAudioUrl = URL.createObjectURL(blob); shStream?.getTracks().forEach(t=>t.stop()); shStream = null; shMR = null; R();}; mr.start(); shRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); shRec=false; R();});}
+function handleGameClick(idx){if(gameMatched.includes(idx) || gameSelected.includes(idx)) return; gameSelected.push(idx); R(); if(gameSelected.length === 2){const [i1, i2] = gameSelected; const c1 = gameCards[i1], c2 = gameCards[i2]; setTimeout(()=>{if(c1.id === c2.id && c1.type !== c2.type){gameMatched.push(i1, i2); if(c1.type === 'en') say(c1.text); else say(c2.text);} gameSelected = []; R();}, 600);}}
+
+R();
+</script>
+</body>
+</html>
