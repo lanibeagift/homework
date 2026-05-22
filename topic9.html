@@ -149,6 +149,11 @@ let fcRec=false, fcAudioUrl=null, fcStream=null, fcMR=null, fcChunks=[];
 
 // --- STATE DICTATION MỚI ---
 let dicIdx=0, dicLevel=50, dicSpeed=1.0, dicTokens=[], lastDicIdx=-1;
+let dicRepeatTimes = 3; 
+let dicPauseSec = 1; 
+let showRepeatSettings = false; 
+let isPlayingLoop = false; 
+let stopPlayback = false;
 
 let shIdx=0, shRec=false, shAudioUrl=null, shStream=null, shMR=null, shChunks=[];
 let chalIdx=0, chalVal='', chalFb=null, chalHint=false;
@@ -160,12 +165,69 @@ if('speechSynthesis' in window){ldv();speechSynthesis.onvoiceschanged=ldv}
 
 function say(t,r=0.9){if(!t)return;if(window.responsiveVoice&&responsiveVoice.voiceSupport()){responsiveVoice.cancel();responsiveVoice.speak(t.trim(),'US English Female',{rate:r,pitch:1.05});return}if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.trim());u.lang='en-US';u.rate=r;if(bv)u.voice=bv;speechSynthesis.speak(u)}}
 
+// Hàm đọc âm thanh có hỗ trợ "chờ" (Promise) để xử lý lặp lại
+function sayAsync(t, r=0.9){
+    return new Promise(resolve => {
+        if(!t) { resolve(); return; }
+        if(window.responsiveVoice && responsiveVoice.voiceSupport()){
+            responsiveVoice.cancel();
+            responsiveVoice.speak(t.trim(), 'US English Female', { rate:r, pitch:1.05, onend: resolve });
+        } 
+        else if('speechSynthesis' in window){
+            speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(t.trim());
+            u.lang = 'en-US'; u.rate = r;
+            if(bv) u.voice = bv;
+            u.onend = resolve;
+            u.onerror = resolve; // Bắt lỗi để không bị treo
+            speechSynthesis.speak(u);
+        } else {
+            resolve();
+        }
+    });
+}
+
+// Hàm điều khiển Play/Stop và lặp lại
+async function togglePlayDictation() {
+    if(isPlayingLoop) {
+        stopPlayback = true;
+        if(window.responsiveVoice) responsiveVoice.cancel();
+        if('speechSynthesis' in window) speechSynthesis.cancel();
+        isPlayingLoop = false;
+        R();
+        return;
+    }
+
+    isPlayingLoop = true;
+    stopPlayback = false;
+    R(); 
+
+    const text = storyLines[dicIdx].en;
+    let count = 0;
+
+    while(!stopPlayback) {
+        if (dicRepeatTimes !== -1 && count >= dicRepeatTimes) break;
+        
+        await sayAsync(text, dicSpeed); 
+        if(stopPlayback) break;
+        
+        count++;
+        
+        if(!stopPlayback && (dicRepeatTimes === -1 || count < dicRepeatTimes)) {
+            await new Promise(res => setTimeout(res, dicPauseSec * 1000));
+        }
+    }
+
+    isPlayingLoop = false;
+    R(); 
+}
+
 // BẢN VÁ: Xử lý cả nháy đơn và nháy kép trong HTML inline
 function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,"&quot;")}
 
 function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
 
-// BẢN VÁ: Hàm chuẩn hóa chuỗi chính xác hơn (xoá nháy, biến dấu câu thành khoảng trắng, gom khoảng trắng, trim)
+// BẢN VÁ: Hàm chuẩn hóa chuỗi chính xác hơn
 function norm(s){
     return (s||'')
         .toLowerCase()
@@ -173,17 +235,6 @@ function norm(s){
         .replace(/[.,!?;:…\-—–()\/\\]/g, ' ') 
         .replace(/\s+/g, ' ') 
         .trim(); 
-}
-
-// BẢN VÁ: Xử lý dấu câu ở đầu từ khi tạo hint
-function genHintText(text) {
-    return text.split(' ').map(w => {
-        let match = w.match(/^([^a-zA-ZÀ-ỹ]*)([a-zA-ZÀ-ỹ])(.*)/);
-        if(match) {
-            return match[1] + match[2] + match[3].replace(/[a-zA-ZÀ-ỹ]/g, '_');
-        }
-        return w;
-    }).join(' ');
 }
 
 // --- DICTATION MỚI ---
@@ -227,12 +278,15 @@ function chkDicWord(idx) {
     }
 }
 
-function getDicHints() {
-    let hidden = dicTokens.filter(t => t.mask && !t.solved).map(t => t.text.toLowerCase());
-    if(hidden.length === 0) return '🎉 Đã hoàn thành câu này!';
-    return [...new Set(hidden)].sort().join(' ; ');
+// Hàm hỗ trợ Phím Tab để gợi ý từ
+function handleDicInputKey(event, idx) {
+    if(event.key === 'Tab') {
+        event.preventDefault(); 
+        const inp = document.getElementById(`dic-inp-${idx}`);
+        inp.value = dicTokens[idx].text; 
+        inp.select(); 
+    }
 }
-
 
 function initGame(){
     const pool = [...V].sort(()=>Math.random()-.5).slice(0, 6);
@@ -340,46 +394,74 @@ function R(){
         const isAllSolved = dicTokens.every(t => !t.mask || t.solved);
 
         html += `
-        <div class="card" style="padding:2.5rem 2rem">
-            <div style="background:#f8fafc; padding:1rem 1.5rem; border-radius:12px; color:var(--mut); margin-bottom:1.5rem; border:1px solid var(--brd)">
-                Gợi ý: <span style="font-weight:600; color:var(--text)">${getDicHints()}</span>
-            </div>
-            
+        <div class="card" style="padding:2.5rem 2rem; min-height: 400px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
                 <div style="display:flex; gap:0.5rem; align-items:center;">
-                    <button onclick="if(dicIdx>0){dicIdx--;R()}" class="dic-ctrl-btn">⏮</button>
-                    <button onclick="say('${esc(storyLines[dicIdx].en)}', ${dicSpeed})" class="dic-ctrl-btn" style="border:1px solid var(--brd); border-radius:12px; width:48px; height:48px">▶️</button>
-                    <button onclick="if(dicIdx<storyLines.length-1){dicIdx++;R()}" class="dic-ctrl-btn">⏭</button>
+                    <button onclick="if(dicIdx>0){dicIdx--; stopPlayback=true; R()}" class="dic-ctrl-btn">⏮</button>
+                    
+                    <button onclick="togglePlayDictation()" class="dic-ctrl-btn" style="border:1px solid var(--brd); border-radius:12px; width:48px; height:48px; background:${isPlayingLoop ? 'var(--err)' : 'transparent'}; color:${isPlayingLoop ? '#fff' : 'var(--text)'}">
+                        ${isPlayingLoop ? '⏹' : '▶️'}
+                    </button>
+                    
+                    <button onclick="if(dicIdx<storyLines.length-1){dicIdx++; stopPlayback=true; R()}" class="dic-ctrl-btn">⏭</button>
                     
                     <span style="font-weight:700; color:var(--sec); margin:0 1rem">${dicIdx+1} / ${storyLines.length}</span>
                     
-                    <button onclick="dicSpeed = dicSpeed===1?0.8:(dicSpeed===0.8?0.5:1);R()" class="sub-btn" style="padding:0.4rem 0.8rem; font-size:0.9rem">${dicSpeed}x</button>
-                    <button onclick="say('${esc(storyLines[dicIdx].en)}', ${dicSpeed})" class="dic-ctrl-btn" title="Phát lại (Phím tắt: Ctrl)">🔁</button>
+                    <button onclick="dicSpeed = dicSpeed===1?0.8:(dicSpeed===0.8?0.5:1); R()" class="sub-btn" style="padding:0.4rem 0.8rem; font-size:0.9rem">${dicSpeed}x</button>
+                    
+                    <div style="position:relative; display:inline-block;">
+                        <button onclick="showRepeatSettings=!showRepeatSettings; R()" class="dic-ctrl-btn" title="Cài đặt phát lại" style="background:${showRepeatSettings ? '#f3f4f6' : 'transparent'}">🔁</button>
+                        
+                        ${showRepeatSettings ? `
+                        <div style="position:absolute; top:120%; left:0; background:#fff; border:1px solid var(--brd); border-radius:16px; padding:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,0.1); z-index:50; width:240px; text-align:left;">
+                            <div style="margin-bottom:1rem;">
+                                <label style="display:block; font-size:0.85rem; color:var(--mut); margin-bottom:0.4rem; font-weight:700">Số lần phát lại</label>
+                                <select id="selRepeat" style="width:100%; padding:0.6rem; border-radius:10px; border:1px solid var(--sec); outline:none; font-family:inherit">
+                                    <option value="1" ${dicRepeatTimes===1?'selected':''}>1 lần</option>
+                                    <option value="2" ${dicRepeatTimes===2?'selected':''}>2 lần</option>
+                                    <option value="3" ${dicRepeatTimes===3?'selected':''}>3 lần</option>
+                                    <option value="5" ${dicRepeatTimes===5?'selected':''}>5 lần</option>
+                                    <option value="-1" ${dicRepeatTimes===-1?'selected':''}>Lặp vô hạn</option>
+                                </select>
+                            </div>
+                            <div style="margin-bottom:1.25rem;">
+                                <label style="display:block; font-size:0.85rem; color:var(--mut); margin-bottom:0.4rem; font-weight:700">Thời gian nghỉ</label>
+                                <select id="selPause" style="width:100%; padding:0.6rem; border-radius:10px; border:1px solid var(--brd); outline:none; font-family:inherit">
+                                    <option value="1" ${dicPauseSec===1?'selected':''}>1s</option>
+                                    <option value="2" ${dicPauseSec===2?'selected':''}>2s</option>
+                                    <option value="3" ${dicPauseSec===3?'selected':''}>3s</option>
+                                    <option value="5" ${dicPauseSec===5?'selected':''}>5s</option>
+                                </select>
+                            </div>
+                            <button onclick="dicRepeatTimes=parseInt(document.getElementById('selRepeat').value); dicPauseSec=parseInt(document.getElementById('selPause').value); showRepeatSettings=false; R()" style="width:100%; padding:0.75rem; background:#1e293b; color:#fff; border-radius:10px; font-weight:700; border:none; cursor:pointer">Áp dụng</button>
+                        </div>
+                        ` : ''}
+                    </div>
                 </div>
 
                 <div style="display:flex; align-items:center; background:#f1f5f9; border-radius:12px; padding:0.25rem;">
                     <span style="font-weight:600; color:var(--mut); margin:0 0.75rem; font-size:0.95rem">Ẩn từ:</span>
-                    <button onclick="dicLevel=30;initDicToken();R()" class="dic-lvl-btn ${dicLevel===30?'active':''}">30%</button>
-                    <button onclick="dicLevel=50;initDicToken();R()" class="dic-lvl-btn ${dicLevel===50?'active':''}">50%</button>
-                    <button onclick="dicLevel=100;initDicToken();R()" class="dic-lvl-btn ${dicLevel===100?'active':''}">100%</button>
+                    <button onclick="dicLevel=30; stopPlayback=true; initDicToken(); R()" class="dic-lvl-btn ${dicLevel===30?'active':''}">30%</button>
+                    <button onclick="dicLevel=50; stopPlayback=true; initDicToken(); R()" class="dic-lvl-btn ${dicLevel===50?'active':''}">50%</button>
+                    <button onclick="dicLevel=100; stopPlayback=true; initDicToken(); R()" class="dic-lvl-btn ${dicLevel===100?'active':''}">100%</button>
                 </div>
             </div>
 
-            <div style="background:#fcfaf8; padding:2.5rem 2rem; border-radius:20px; font-size:1.4rem; line-height:2.8; border:2px dashed ${isAllSolved ? 'var(--suc)' : 'var(--brd)'}; text-align:left">
+            <div style="background:#fcfaf8; padding:2.5rem 2rem; border-radius:20px; font-size:1.4rem; line-height:2.8; border:2px dashed ${isAllSolved ? 'var(--suc)' : 'var(--brd)'}; text-align:left; position:relative; z-index:1;">
                 ${dicTokens.map((tok, i) => {
                     if(!tok.isWord) return `<span style="white-space:pre-wrap;color:var(--text)">${tok.text}</span>`;
                     if(!tok.mask || tok.solved) return `<span style="color:${tok.mask ? 'var(--pri)' : 'var(--text)'};font-weight:${tok.mask?'800':'500'}">${tok.text}</span>`;
                     
                     let wLen = tok.text.length;
                     let placeholder = window.innerWidth > 768 ? '·'.repeat(wLen) : '';
-                    return `<input type="text" id="dic-inp-${i}" oninput="chkDicWord(${i})" class="dic-inline-inp" style="width:${Math.max(wLen*1.1, 3)}rem" placeholder="${placeholder}" autocomplete="off" spellcheck="false">`;
+                    return `<input type="text" id="dic-inp-${i}" oninput="chkDicWord(${i})" onkeydown="handleDicInputKey(event, ${i})" class="dic-inline-inp" style="width:${Math.max(wLen*1.1, 3)}rem" placeholder="${placeholder}" autocomplete="off" spellcheck="false">`;
                 }).join('')}
             </div>
             
             <div style="margin-top:2rem; color:var(--mut); font-size:0.95rem; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap">
                 <span>💡 Tắt bộ gõ tiếng Việt để tự chuyển ô</span>
                 <span><b>Ctrl</b>: Phát lại</span>
-                <span><b>Tab</b>: Nhảy ô trống</span>
+                <span><b>Tab</b>: Gợi ý từ</span>
             </div>
         </div>`;
     }
@@ -512,7 +594,7 @@ function R(){
     
     if(tab === 'flashcard' && fcM === 'type') document.getElementById('fcTypeInp')?.focus();
     if(tab === 'dictation') {
-        const firstInp = document.querySelector('.dic-inline-inp');
+        const firstInp = document.querySelector('.dic-inline-inp:not([disabled])');
         if(firstInp) firstInp.focus();
     }
     if(tab === 'challenge') document.getElementById('chalInput')?.focus();
@@ -527,10 +609,18 @@ function shMic(){if(shRec){if(shMR && shMR.state==='recording') shMR.stop(); if(
 
 function handleGameClick(idx){if(gameMatched.includes(idx) || gameSelected.includes(idx)) return; gameSelected.push(idx); R(); if(gameSelected.length === 2){const [i1, i2] = gameSelected; const c1 = gameCards[i1], c2 = gameCards[i2]; setTimeout(()=>{if(c1.id === c2.id && c1.type !== c2.type){gameMatched.push(i1, i2); if(c1.type === 'en') say(c1.text); else say(c2.text);} gameSelected = []; R();}, 600);}}
 
-// Lắng nghe sự kiện phím tắt (Ctrl để phát lại âm thanh)
+// Lắng nghe sự kiện phím tắt (Ctrl để phát/dừng vòng lặp âm thanh)
 document.addEventListener('keydown', function(e) {
     if(tab === 'dictation' && e.key === 'Control') {
-        say(storyLines[dicIdx].en, dicSpeed);
+        if (!isPlayingLoop) {
+            togglePlayDictation();
+        } else {
+            stopPlayback = true; 
+            if(window.responsiveVoice) responsiveVoice.cancel();
+            if('speechSynthesis' in window) speechSynthesis.cancel();
+            isPlayingLoop = false;
+            R();
+        }
     }
 });
 
