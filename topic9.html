@@ -38,6 +38,49 @@ input:focus, textarea:focus{border-color:var(--sec);box-shadow:0 0 0 3px rgba(14
 .exp-box.show {display:block;}
 .exp-ok {background:#f0fdf4; color:#166534; border:1px solid #bbf7d0;}
 .exp-no {background:#fff1f2; color:#9f1239; border:1px solid #fecdd3;}
+
+/* --- DICTATION NEW STYLES --- */
+.dic-inline-inp {
+    border: none;
+    border-bottom: 2px solid #bae6fd;
+    background: transparent;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+    margin: 0 0.3rem;
+    color: var(--sec);
+    font-weight: 700;
+    outline: none;
+    border-radius: 0;
+    box-shadow: none;
+    transition: all 0.2s;
+}
+.dic-inline-inp:focus {
+    border-bottom-color: var(--pri);
+    background: rgba(14,165,233,.05);
+}
+.dic-lvl-btn {
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    color: var(--mut);
+    background: transparent;
+    border-radius: 8px;
+}
+.dic-lvl-btn.active {
+    background: #1e293b;
+    color: #fff;
+}
+.dic-ctrl-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.dic-ctrl-btn:hover { background: #f3f4f6; }
 </style>
 </head>
 <body>
@@ -103,7 +146,10 @@ const KSQ = [
 let tab = 'flashcard'; 
 let fcM='flip', fi=0, fcFlip=false, qO=[], qFb=null, tV='', tFb=null;
 let fcRec=false, fcAudioUrl=null, fcStream=null, fcMR=null, fcChunks=[];
-let dicIdx=0, dicVal='', dicFb=null, dicHint=false;
+
+// --- STATE DICTATION MỚI ---
+let dicIdx=0, dicLevel=50, dicSpeed=1.0, dicTokens=[], lastDicIdx=-1;
+
 let shIdx=0, shRec=false, shAudioUrl=null, shStream=null, shMR=null, shChunks=[];
 let chalIdx=0, chalVal='', chalFb=null, chalHint=false;
 let gameCards=[], gameSelected=[], gameMatched=[];
@@ -111,17 +157,82 @@ let pqA={}, ksqA={};
 
 let bv=null;function ldv(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();if(!vs.length)return;['Microsoft Aria Online','Google US English','Samantha','Microsoft Zira'].some(p=>{const f=vs.find(x=>x.name.includes(p));if(f){bv=f;return true}});if(!bv)bv=vs.find(x=>x.lang==='en-US')||vs[0]}
 if('speechSynthesis' in window){ldv();speechSynthesis.onvoiceschanged=ldv}
+
 function say(t,r=0.9){if(!t)return;if(window.responsiveVoice&&responsiveVoice.voiceSupport()){responsiveVoice.cancel();responsiveVoice.speak(t.trim(),'US English Female',{rate:r,pitch:1.05});return}if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.trim());u.lang='en-US';u.rate=r;if(bv)u.voice=bv;speechSynthesis.speak(u)}}
-function esc(s){return s.replace(/'/g,"\\'")}
+
+// BẢN VÁ: Xử lý cả nháy đơn và nháy kép trong HTML inline
+function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,"&quot;")}
+
 function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
-function norm(s){return(s||'').trim().toLowerCase().replace(/[.,!?;:'"…\-()\/\\]/g,'').replace(/\s+/g,' ')}
+
+// BẢN VÁ: Hàm chuẩn hóa chuỗi chính xác hơn (xoá nháy, biến dấu câu thành khoảng trắng, gom khoảng trắng, trim)
+function norm(s){
+    return (s||'')
+        .toLowerCase()
+        .replace(/['"“”‘’]/g, '') 
+        .replace(/[.,!?;:…\-—–()\/\\]/g, ' ') 
+        .replace(/\s+/g, ' ') 
+        .trim(); 
+}
+
+// BẢN VÁ: Xử lý dấu câu ở đầu từ khi tạo hint
 function genHintText(text) {
     return text.split(' ').map(w => {
-        let match = w.match(/^([a-zA-ZÀ-ỹ])(.*)/);
-        if(match) return match[1] + match[2].replace(/[a-zA-ZÀ-ỹ]/g, '_');
+        let match = w.match(/^([^a-zA-ZÀ-ỹ]*)([a-zA-ZÀ-ỹ])(.*)/);
+        if(match) {
+            return match[1] + match[2] + match[3].replace(/[a-zA-ZÀ-ỹ]/g, '_');
+        }
         return w;
     }).join(' ');
 }
+
+// --- DICTATION MỚI ---
+function initDicToken() {
+    const line = storyLines[dicIdx].en;
+    const rawTokens = line.match(/[a-zA-Z0-9_’'-]+|[^a-zA-Z0-9_’'-]+/g) || [];
+    
+    let wordIndices = [];
+    dicTokens = rawTokens.map((t, i) => {
+        let isWord = /[a-zA-Z0-9]/.test(t);
+        if(isWord) wordIndices.push(i);
+        return { text: t, isWord: isWord, mask: false, solved: false };
+    });
+
+    if(dicLevel === 100) {
+        wordIndices.forEach(i => dicTokens[i].mask = true);
+    } else {
+        let maskCount = Math.max(1, Math.floor(wordIndices.length * (dicLevel / 100)));
+        let shuffled = [...wordIndices].sort(() => Math.random() - 0.5);
+        for(let i=0; i<maskCount; i++) dicTokens[shuffled[i]].mask = true;
+    }
+}
+
+function chkDicWord(idx) {
+    const inp = document.getElementById(`dic-inp-${idx}`);
+    if(!inp) return;
+    const val = inp.value.trim().toLowerCase().replace(/['’]/g, '');
+    const target = dicTokens[idx].text.toLowerCase().replace(/['’]/g, '');
+    
+    if(val === target) {
+        dicTokens[idx].solved = true;
+        R(); 
+        setTimeout(() => {
+            const nextInp = document.querySelector('.dic-inline-inp');
+            if(nextInp) {
+                nextInp.focus();
+            } else {
+                say("Excellent!"); 
+            }
+        }, 50);
+    }
+}
+
+function getDicHints() {
+    let hidden = dicTokens.filter(t => t.mask && !t.solved).map(t => t.text.toLowerCase());
+    if(hidden.length === 0) return '🎉 Đã hoàn thành câu này!';
+    return [...new Set(hidden)].sort().join(' ; ');
+}
+
 
 function initGame(){
     const pool = [...V].sort(()=>Math.random()-.5).slice(0, 6);
@@ -221,27 +332,54 @@ function R(){
     }
 
     else if(tab === 'dictation'){
-        const line = storyLines[dicIdx];
-        const hintString = genHintText(line.en);
-        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
-            <h2 style="font-size:1.8rem;color:var(--sec);margin-bottom:0.75rem">✍️ Dictation</h2>
-            <p style="color:var(--mut);margin-bottom:2.5rem">Lắng nghe và gõ lại trọn vẹn câu tiếng Anh.</p>
-            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:2.5rem">
-                <button onclick="say('${esc(line.en)}', 0.8)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 Nghe chậm (0.8x)</button>
-                <button onclick="say('${esc(line.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 Nghe chuẩn (1.0x)</button>
+        if(dicTokens.length === 0 || lastDicIdx !== dicIdx) {
+            initDicToken();
+            lastDicIdx = dicIdx;
+        }
+
+        const isAllSolved = dicTokens.every(t => !t.mask || t.solved);
+
+        html += `
+        <div class="card" style="padding:2.5rem 2rem">
+            <div style="background:#f8fafc; padding:1rem 1.5rem; border-radius:12px; color:var(--mut); margin-bottom:1.5rem; border:1px solid var(--brd)">
+                Gợi ý: <span style="font-weight:600; color:var(--text)">${getDicHints()}</span>
             </div>
-            <div style="max-width:800px;margin:0 auto">
-                ${dicHint ? `<div style="margin-bottom:1.5rem;color:var(--sec);font-family:monospace;font-weight:700;background:rgba(14,165,233,.08);padding:1rem;border-radius:12px;letter-spacing:2px">💡 ${hintString}</div>` : `<button onclick="dicHint=true;R()" class="sub-btn" style="margin: 0 auto 1.5rem auto">💡 Bật gợi ý</button>`}
-                <textarea id="dicInput" rows="3" placeholder="Gõ lại câu tiếng Anh bạn nghe được vào đây..." onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();checkDic()}">${dicVal}</textarea>
-                <div style="display:flex;justify-content:flex-end;margin-top:1.5rem">
-                    <button onclick="checkDic()" style="padding:1rem 3rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800;box-shadow:0 4px 15px rgba(14,165,233,.3)">Check</button>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
+                <div style="display:flex; gap:0.5rem; align-items:center;">
+                    <button onclick="if(dicIdx>0){dicIdx--;R()}" class="dic-ctrl-btn">⏮</button>
+                    <button onclick="say('${esc(storyLines[dicIdx].en)}', ${dicSpeed})" class="dic-ctrl-btn" style="border:1px solid var(--brd); border-radius:12px; width:48px; height:48px">▶️</button>
+                    <button onclick="if(dicIdx<storyLines.length-1){dicIdx++;R()}" class="dic-ctrl-btn">⏭</button>
+                    
+                    <span style="font-weight:700; color:var(--sec); margin:0 1rem">${dicIdx+1} / ${storyLines.length}</span>
+                    
+                    <button onclick="dicSpeed = dicSpeed===1?0.8:(dicSpeed===0.8?0.5:1);R()" class="sub-btn" style="padding:0.4rem 0.8rem; font-size:0.9rem">${dicSpeed}x</button>
+                    <button onclick="say('${esc(storyLines[dicIdx].en)}', ${dicSpeed})" class="dic-ctrl-btn" title="Phát lại (Phím tắt: Ctrl)">🔁</button>
+                </div>
+
+                <div style="display:flex; align-items:center; background:#f1f5f9; border-radius:12px; padding:0.25rem;">
+                    <span style="font-weight:600; color:var(--mut); margin:0 0.75rem; font-size:0.95rem">Ẩn từ:</span>
+                    <button onclick="dicLevel=30;initDicToken();R()" class="dic-lvl-btn ${dicLevel===30?'active':''}">30%</button>
+                    <button onclick="dicLevel=50;initDicToken();R()" class="dic-lvl-btn ${dicLevel===50?'active':''}">50%</button>
+                    <button onclick="dicLevel=100;initDicToken();R()" class="dic-lvl-btn ${dicLevel===100?'active':''}">100%</button>
                 </div>
             </div>
-            ${dicFb!==null?`<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${dicFb?'#ecfdf5':'#fef2f2'};color:${dicFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${dicFb?'✅ Xuất sắc! Bạn gõ đúng rồi!':'❌ Chưa khớp. Đáp án là:<br><span style="color:var(--text);font-weight:600;display:inline-block;margin-top:1rem;font-size:1.3rem">"'+line.en+'"</span>'}</div>`:''}
-            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
-                <button onclick="if(dicIdx>0){dicIdx--;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">← Câu trước</button>
-                <span style="align-self:center;color:var(--mut);font-weight:800">${dicIdx+1} / ${storyLines.length}</span>
-                <button onclick="if(dicIdx<storyLines.length-1){dicIdx++;dicFb=null;dicVal='';dicHint=false;R()}" class="sub-btn">Câu sau →</button>
+
+            <div style="background:#fcfaf8; padding:2.5rem 2rem; border-radius:20px; font-size:1.4rem; line-height:2.8; border:2px dashed ${isAllSolved ? 'var(--suc)' : 'var(--brd)'}; text-align:left">
+                ${dicTokens.map((tok, i) => {
+                    if(!tok.isWord) return `<span style="white-space:pre-wrap;color:var(--text)">${tok.text}</span>`;
+                    if(!tok.mask || tok.solved) return `<span style="color:${tok.mask ? 'var(--pri)' : 'var(--text)'};font-weight:${tok.mask?'800':'500'}">${tok.text}</span>`;
+                    
+                    let wLen = tok.text.length;
+                    let placeholder = window.innerWidth > 768 ? '·'.repeat(wLen) : '';
+                    return `<input type="text" id="dic-inp-${i}" oninput="chkDicWord(${i})" class="dic-inline-inp" style="width:${Math.max(wLen*1.1, 3)}rem" placeholder="${placeholder}" autocomplete="off" spellcheck="false">`;
+                }).join('')}
+            </div>
+            
+            <div style="margin-top:2rem; color:var(--mut); font-size:0.95rem; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap">
+                <span>💡 Tắt bộ gõ tiếng Việt để tự chuyển ô</span>
+                <span><b>Ctrl</b>: Phát lại</span>
+                <span><b>Tab</b>: Nhảy ô trống</span>
             </div>
         </div>`;
     }
@@ -373,16 +511,28 @@ function R(){
     app.innerHTML = html;
     
     if(tab === 'flashcard' && fcM === 'type') document.getElementById('fcTypeInp')?.focus();
-    if(tab === 'dictation') document.getElementById('dicInput')?.focus();
+    if(tab === 'dictation') {
+        const firstInp = document.querySelector('.dic-inline-inp');
+        if(firstInp) firstInp.focus();
+    }
     if(tab === 'challenge') document.getElementById('chalInput')?.focus();
 }
 
 function chkFcType(){const i = document.getElementById('fcTypeInp'); tV = i ? i.value : ''; tFb = norm(tV) === norm(V[fi].en); setTimeout(()=>{if(tFb){if(fi<V.length-1){fi++; tFb=null; tV=''; R()}else{fcM='say'; fi=0; tFb=null; tV=''; R()}}}, 1200); R();}
 function fcMic(){if(fcRec){if(fcMR && fcMR.state==='recording') fcMR.stop(); if(fcStream) fcStream.getTracks().forEach(t=>t.stop()); fcRec = false; R(); return;} fcAudioUrl = null; fcChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{fcStream = stream; const mr = new MediaRecorder(stream); fcMR = mr; mr.ondataavailable = e => { if(e.data.size>0) fcChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(fcChunks, {type:'audio/webm'}); fcAudioUrl = URL.createObjectURL(blob); fcStream?.getTracks().forEach(t=>t.stop()); fcStream = null; fcMR = null; R();}; mr.start(); fcRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); fcRec=false; R();});}
-function checkDic(){const inp = document.getElementById('dicInput'); dicVal = inp ? inp.value : ''; dicFb = norm(dicVal) === norm(storyLines[dicIdx].en); R();}
+
 function checkChal(){const inp = document.getElementById('chalInput'); chalVal = inp ? inp.value : ''; chalFb = norm(chalVal) === norm(storyLines[chalIdx].en); R();}
+
 function shMic(){if(shRec){if(shMR && shMR.state==='recording') shMR.stop(); if(shStream) shStream.getTracks().forEach(t=>t.stop()); shRec = false; R(); return;} shAudioUrl = null; shChunks = []; navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{shStream = stream; const mr = new MediaRecorder(stream); shMR = mr; mr.ondataavailable = e => { if(e.data.size>0) shChunks.push(e.data) }; mr.onstop = () => {const blob = new Blob(shChunks, {type:'audio/webm'}); shAudioUrl = URL.createObjectURL(blob); shStream?.getTracks().forEach(t=>t.stop()); shStream = null; shMR = null; R();}; mr.start(); shRec = true; R();}).catch(()=>{alert('Không thể truy cập microphone.'); shRec=false; R();});}
+
 function handleGameClick(idx){if(gameMatched.includes(idx) || gameSelected.includes(idx)) return; gameSelected.push(idx); R(); if(gameSelected.length === 2){const [i1, i2] = gameSelected; const c1 = gameCards[i1], c2 = gameCards[i2]; setTimeout(()=>{if(c1.id === c2.id && c1.type !== c2.type){gameMatched.push(i1, i2); if(c1.type === 'en') say(c1.text); else say(c2.text);} gameSelected = []; R();}, 600);}}
+
+// Lắng nghe sự kiện phím tắt (Ctrl để phát lại âm thanh)
+document.addEventListener('keydown', function(e) {
+    if(tab === 'dictation' && e.key === 'Control') {
+        say(storyLines[dicIdx].en, dicSpeed);
+    }
+});
 
 R();
 </script>
