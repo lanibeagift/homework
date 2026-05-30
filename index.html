@@ -1,130 +1,167 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Tutor Dashboard 🚀</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg: #Fcfaf8; 
-    --card: #ffffff; 
-    --brd: #e5e7eb; 
-    --text: #1f2937; 
-    --mut: #6b7280; 
-    --pri: #f43f5e; 
-    --sec: #0ea5e9; 
-    --suc: #10b981; 
-    --warn: #f59e0b;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Tutor Dashboard 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #Fcfaf8; 
+            --card: #ffffff; 
+            --brd: #e5e7eb; 
+            --text: #1f2937; 
+            --mut: #6b7280; 
+            --pri: #f43f5e; 
+            --sec: #0ea5e9; 
+            --suc: #10b981; 
+            --warn: #f59e0b;
+        }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 3rem 1.5rem;
-}
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1.5rem;
+        }
 
-.dashboard-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
-.dashboard-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.8rem;
-    color: var(--text);
-    margin-bottom: 0.5rem;
-}
+        .dashboard-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
 
-.dashboard-header p {
-    color: var(--mut);
-    font-size: 1.15rem;
-    font-weight: 500;
-}
+        .dashboard-header p {
+            color: var(--mut);
+            font-size: 1.15rem;
+            font-weight: 500;
+        }
 
-.topic-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 1000px;
-}
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1000px;
+        }
 
-.topic-card {
-    background: var(--card);
-    border: 1px solid var(--brd);
-    border-radius: 24px;
-    padding: 2rem;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-    position: relative;
-    overflow: hidden;
-}
+        .topic-card {
+            background: var(--card);
+            border: 1px solid var(--brd);
+            border-radius: 24px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
 
-.topic-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-    border-color: var(--sec);
-}
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            border-color: var(--sec);
+        }
 
-.topic-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 6px; height: 100%;
-}
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 6px; height: 100%;
+        }
 
-.card-9::before { background: var(--pri); }
-.card-10::before { background: var(--warn); }
-.card-11::before { background: var(--sec); }
-.card-12::before { background: var(--suc); }
+        .card-9::before { background: var(--pri); }
+        .card-10::before { background: var(--warn); }
+        .card-11::before { background: var(--sec); }
+        .card-12::before { background: var(--suc); }
 
-.topic-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    background: #f9fafb;
-    width: 70px; height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-}
+        .topic-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: #f9fafb;
+            width: 70px; height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
 
-.topic-num {
-    font-size: 0.9rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 0.5rem;
-}
+        .topic-num {
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
 
-.card-9 .topic-num { color: var(--pri); }
-.card-10 .topic-num { color: var(--warn); }
-.card-11 .topic-num { color: var(--sec); }
-.card-12 .topic-num { color: var(--suc); }
+        .card-9 .topic-num { color: var(--pri); }
+        .card-10 .topic-num { color: var(--warn); }
+        .card-11 .topic-num { color: var(--sec); }
+        .card-12 .topic-num { color: var(--suc); }
 
-.topic-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1.4;
-    color: var(--text);
-}
+        .topic-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--text);
+        }
 
-@media (max-width: 600px) {
-    .dashboard-header h1 { font-size: 2.2rem; }
-}
-</style>
+        /* ----- CSS MỚI CHO CÁC NÚT BẤM (LESSON & QUIZ) ----- */
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.7rem;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-lesson {
+            background: #f3f4f6;
+            color: var(--text);
+        }
+
+        .btn-lesson:hover {
+            background: #e5e7eb;
+        }
+
+        /* Nút Quiz tự đổi màu theo theme của card */
+        .card-9 .btn-quiz { background: var(--pri); color: #fff; }
+        .card-10 .btn-quiz { background: var(--warn); color: #fff; }
+        .card-11 .btn-quiz { background: var(--sec); color: #fff; }
+        .card-12 .btn-quiz { background: var(--suc); color: #fff; }
+        
+        .btn-quiz:hover { 
+            opacity: 0.85; 
+            transform: translateY(-2px); 
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-header h1 { font-size: 2.2rem; }
+        }
+    </style>
 </head>
 <body>
 
@@ -134,17 +171,27 @@ body {
     </div>
 
     <div class="topic-grid">
-        <a href="topic9.html" class="topic-card card-9">
+        <div class="topic-card card-9">
             <div class="topic-icon">🏮</div>
             <div class="topic-num">Topic 09</div>
             <h2 class="topic-title">Local tips for Hoi An</h2>
-        </a>
+            
+            <div class="card-actions">
+                <a href="topic9.html" class="btn btn-lesson">📖 Lesson</a>
+                <a href="quiz9.html" class="btn btn-quiz">✍️ Quiz</a>
+            </div>
+        </div>
 
-        <a href="topic10.html" class="topic-card card-10">
+        <div class="topic-card card-10">
             <div class="topic-icon">🛵</div>
             <div class="topic-num">Topic 10</div>
             <h2 class="topic-title">The road to Hue</h2>
-        </a>
+            
+            <div class="card-actions">
+                <a href="topic10.html" class="btn btn-lesson">📖 Lesson</a>
+                <a href="quiz10.html" class="btn btn-quiz">✍️ Quiz</a>
+            </div>
+        </div>
 
     </div>
 
