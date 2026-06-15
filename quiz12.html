@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini-Test: A Bittersweet Farewell 👋 — Loving English</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fdf6ed;
+      --surface: #fffdf8;
+      --surface2: #fff8ee;
+      --border: #e8d8c0;
+      --border2: #d4b896;
+      --accent: #b5651d;
+      --accent2: #d4891a;
+      --accent3: #7c4a1e;
+      --green: #2d7a4f;
+      --green-bg: #e8f5ee;
+      --red: #c0392b;
+      --red-bg: #fdecea;
+      --gold: #c9942a;
+      --text: #2c1a0e;
+      --text2: #5c3d22;
+      --muted: #9a7a5e;
+      --lantern: #e8630a;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(181,101,29,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 85% 70%, rgba(212,137,26,0.06) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b5651d' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Lantern decoration */
+    .lanterns {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .lantern {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0.5;
+    }
+
+    .lantern-string {
+      width: 1px;
+      height: 40px;
+      background: var(--border2);
+    }
+
+    .lantern-body {
+      width: 20px;
+      height: 28px;
+      background: linear-gradient(135deg, #e8630a, #f5a623);
+      border-radius: 50% 50% 45% 45%;
+      box-shadow: 0 0 12px rgba(232,99,10,0.4);
+      position: relative;
+    }
+
+    .lantern-body::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 0 0 3px 3px;
+    }
+
+    /* Main layout */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 80px 20px 60px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeDown 0.7s ease both;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--accent3);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .header h1 em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+
+    .header-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+      box-shadow: 0 4px 20px rgba(44,26,14,0.08);
+      animation: fadeDown 0.7s 0.1s ease both;
+    }
+
+    .progress-text {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .progress-text strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .progress-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 100px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    .progress-score {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    /* Section label */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 40px 0 20px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .section-label:first-of-type { margin-top: 0; }
+
+    .section-num {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .section-info h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--accent3);
+    }
+
+    .section-info p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Question card */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .q-card:hover { box-shadow: 0 4px 20px rgba(44,26,14,0.07); }
+    .q-card.answered { border-color: var(--border2); }
+
+    .q-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .q-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .q-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text);
+      padding-top: 4px;
+    }
+
+    .q-text strong { color: var(--accent); }
+
+    /* Options */
+    .q-options { display: flex; flex-direction: column; gap: 8px; }
+
+    .opt-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.18s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--accent2);
+      background: #fff7f0;
+      transform: translateX(2px);
+    }
+
+    .opt-btn:disabled { cursor: default; }
+
+    .opt-label {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'DM Mono', monospace;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.18s;
+    }
+
+    .opt-btn.correct {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+    .opt-btn.correct .opt-label {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .opt-btn.wrong {
+      border-color: var(--red);
+      background: var(--red-bg);
+    }
+    .opt-btn.wrong .opt-label {
+      background: var(--red);
+      color: #fff;
+    }
+
+    /* Explanation */
+    .explanation {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, #fff8ee, #fff5e8);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    .explanation.show { display: block; animation: fadeUp 0.3s ease; }
+
+    .explanation strong { color: var(--accent3); }
+
+    /* Open-ended section */
+    .open-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .open-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .open-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .open-q {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .open-q em { color: var(--accent2); font-style: italic; }
+
+    .open-textarea {
+      width: 100%;
+      min-height: 90px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      resize: vertical;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .open-textarea:focus { border-color: var(--accent2); }
+
+    .show-answer-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .show-answer-btn:hover { background: var(--accent); color: #fff; }
+
+    .answer-reveal {
+      display: none;
+      margin-top: 12px;
+      padding: 14px;
+      background: var(--green-bg);
+      border: 1px solid rgba(45,122,79,0.25);
+      border-radius: 8px;
+      font-size: 13px;
+      color: #1d5c39;
+      line-height: 1.7;
+    }
+
+    .answer-reveal.show { display: block; animation: fadeUp 0.3s ease; }
+    .answer-reveal strong { font-weight: 700; }
+
+    /* Submit button */
+    .submit-wrap {
+      text-align: center;
+      margin: 40px 0;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 48px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(181,101,29,0.3);
+      letter-spacing: 0.02em;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(181,101,29,0.4);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Scoreboard */
+    #scoreboard {
+      display: none;
+      animation: fadeUp 0.6s ease;
+    }
+
+    .score-card {
+      background: var(--surface);
+      border: 2px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--gold));
+    }
+
+    .score-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .score-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--accent3);
+      margin-bottom: 8px;
+    }
+
+    .score-subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .score-numbers {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .score-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .score-stat-num.green { color: var(--green); }
+    .score-stat-num.red { color: var(--red); }
+    .score-stat-num.gold { color: var(--gold); }
+
+    .score-stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .score-msg {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* Score actions */
+    .score-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-retry {
+      background: linear-gradient(135deg, var(--red), #e05858);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 3px 14px rgba(192,57,43,0.25);
+    }
+
+    .btn-retry:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,57,43,0.3); }
+
+    .btn-reset {
+      background: transparent;
+      border: 2px solid var(--border2);
+      color: var(--text2);
+      border-radius: 10px;
+      padding: 13px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Retry badge */
+    #retry-mode-notice {
+      display: none;
+      background: #fff3e0;
+      border: 1.5px solid var(--accent2);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--accent3);
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Animations */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(181,101,29,0.3); }
+      50% { box-shadow: 0 0 0 8px rgba(181,101,29,0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 60px 14px 40px; }
+      .score-card { padding: 28px 20px; }
+      .score-numbers { gap: 20px; }
+      .progress-wrap { top: 6px; padding: 12px 14px; }
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border2), transparent);
+      margin: 36px 0;
+    }
+
+    /* Part 4 instruction box */
+    .part4-instruction {
+      background: linear-gradient(135deg, #fff8ee, #fffdf8);
+      border: 1px dashed var(--border2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .part4-instruction strong { color: var(--accent3); }
+  </style>
+</head>
+<body>
+
+<div class="lanterns" aria-hidden="true">
+  <div class="lantern"><div class="lantern-string"></div><div class="lantern-body"></div></div>
+  <div class="lantern"><div class="lantern-string" style="height:55px"></div><div class="lantern-body" style="opacity:0.7"></div></div>
+  <div class="lantern"><div class="lantern-string" style="height:30px"></div><div class="lantern-body"></div></div>
+  <div class="lantern"><div class="lantern-string" style="height:60px"></div><div class="lantern-body" style="opacity:0.8"></div></div>
+  <div class="lantern"><div class="lantern-string"></div><div class="lantern-body"></div></div>
+</div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-badge">🏮 Loving English</div>
+    <h1>Mini-Test: <em>A Bittersweet</em><br>Farewell 👋</h1>
+    <div class="header-meta">
+      <span>📋 Topic 12</span>
+      <span>⏱ 15–20 phút</span>
+      <span>📝 20 câu hỏi</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <span class="progress-text">Câu <strong id="done-count">0</strong> / 15</span>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="prog-fill"></div>
+    </div>
+    <span class="progress-score" id="live-score">✓ 0 đúng</span>
+  </div>
+
+  <div id="retry-mode-notice">
+    🔁 Chế độ làm lại câu sai — Tập trung vào <span id="retry-count">0</span> câu bạn chưa đúng nhé!
+  </div>
+
+  <div id="quiz-area">
+    </div><div id="part4-area"></div>
+
+  <div class="submit-wrap" id="submit-wrap">
+    <button class="submit-btn" onclick="submitQuiz()">
+      🏮 Nộp bài &amp; xem kết quả
+    </button>
+  </div>
+
+  <div id="scoreboard">
+    <div class="score-card">
+      <span class="score-icon" id="score-icon">🎉</span>
+      <div class="score-title" id="score-title">Kết quả của bạn</div>
+      <div class="score-subtitle" id="score-sub"></div>
+      <div class="score-numbers">
+        <div class="score-stat">
+          <div class="score-stat-num gold" id="pct-num">0%</div>
+          <div class="score-stat-label">Điểm số</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-stat-num green" id="correct-num">0</div>
+          <div class="score-stat-label">Câu đúng</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-stat-num red" id="wrong-num">0</div>
+          <div class="score-stat-label">Câu sai</div>
+        </div>
+      </div>
+      <div class="score-msg" id="score-msg"></div>
+    </div>
+    <div class="score-actions">
+      <button class="btn-retry" onclick="startRetry()" id="retry-btn">
+        🔁 Làm lại câu sai
+      </button>
+      <button class="btn-reset" onclick="resetAll()">
+        🔄 Làm lại toàn bộ
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =====================================================
+//  DATA - TOPIC 12: A BITTERSWEET FAREWELL
+// =====================================================
+const SECTIONS = [
+  {
+    id: 'p1',
+    label: null, // HTML handled dynamically
+    questions: [
+      {
+        num: 1,
+        q: 'We drove to the Da Nang International Airport to __________ before her flight.',
+        opts: ['see her off', 'take her up', 'head out', 'pass her on'],
+        ans: 0,
+        exp: '✅ <strong>A. see her off</strong> — Cụm động từ "see someone off" mang nghĩa tiễn ai đó (tại sân bay, nhà ga...) trước khi họ khởi hành.'
+      },
+      {
+        num: 2,
+        q: '"Well, ____________. I can\'t believe it\'s time to head out."',
+        opts: ['I guess this is it', 'it\'s such a blast', 'my offer still stands', 'drop me a text'],
+        ans: 0,
+        exp: '✅ <strong>A. I guess this is it</strong> — Thành ngữ phổ biến dùng khi đến thời điểm phải nói lời chia tay hoặc kết thúc một việc gì đó.'
+      },
+      {
+        num: 3,
+        q: 'I ___________ for your amazing hospitality during my entire stay in Vietnam.',
+        opts: ['can\'t thank you enough', 'don\'t think I\'ll ever get tired', 'drop you a text', 'head out'],
+        ans: 0,
+        exp: '✅ <strong>A. can\'t thank you enough</strong> — "I can\'t thank you enough for..." là cấu trúc bày tỏ sự biết ơn vô cùng sâu sắc.'
+      },
+      {
+        num: 4,
+        q: '"If you ever come to New Zealand, ____________. Our door is always open."',
+        opts: ['my offer still stands', 'I guess this is it', 'safe travels', 'pass that on'],
+        ans: 0,
+        exp: '✅ <strong>A. my offer still stands</strong> — Cụm từ dùng để khẳng định rằng lời mời hoặc lời đề nghị trước đó vẫn còn nguyên giá trị.'
+      },
+      {
+        num: 5,
+        q: '"Thank you so much! I\'ll definitely ___________ on that offer someday!"',
+        opts: ['take you up', 'pass that on', 'see you off', 'drop you'],
+        ans: 0,
+        exp: '✅ <strong>A. take you up</strong> — Cụm động từ "take someone up on an offer" nghĩa là nhận lời, đồng ý với lời đề nghị của ai đó.'
+      },
+      {
+        num: 6,
+        q: 'Have a smooth flight and ___________ when you land, okay?',
+        opts: ['drop me a text', 'head out', 'pass that on', 'see me off'],
+        ans: 0,
+        exp: '✅ <strong>A. drop me a text</strong> — "Drop me a text/line" là cách nói thân thiện, tự nhiên để nhờ ai đó nhắn tin cho mình.'
+      },
+    ]
+  },
+  {
+    id: 'p2',
+    label: { num: 2, title: 'Pronunciation', sub: 'Phát âm — Chọn quy tắc phát âm đúng' },
+    questions: [
+      {
+        num: 7,
+        q: "Which word has the ending '-ed' pronounced as /t/?",
+        opts: ['packed', 'showed', 'realized', 'opened'],
+        ans: 0,
+        exp: '✅ <strong>A. packed /pækt/</strong> — Động từ kết thúc bằng âm vô thanh /k/, nên đuôi "-ed" được đọc là /t/.'
+      },
+      {
+        num: 8,
+        q: "Which word has the ending '-s' pronounced as /z/?",
+        opts: ['travels', 'gifts', 'tourists', 'gates'],
+        ans: 0,
+        exp: '✅ <strong>A. travels /ˈtrævəlz/</strong> — Từ "travel" kết thúc bằng âm hữu thanh /l/, nên đuôi "-s" đọc là /z/. Các đáp án còn lại có đuôi đọc là /s/.'
+      },
+      {
+        num: 9,
+        q: 'What is the standard intonation for the phrase: "Safe travels!"?',
+        opts: ['Falling (Xuống giọng ↘)', 'Rising (Lên giọng ↗)', 'Flat (Giữ đều →)'],
+        ans: 0,
+        exp: '✅ <strong>A. Falling ↘</strong> — Câu chúc tụng, mệnh lệnh hoặc cảm thán thường xuống giọng ở cuối câu để tạo sự dứt khoát và chân thành.'
+      },
+      {
+        num: 10,
+        q: 'How do you naturally link the sounds in the phrase "went by in a flash"?',
+        opts: [
+          '/ ɪn - ə / (Không nối âm)',
+          '/ ɪn‿ə / (Nối phụ âm cuối với nguyên âm sau)',
+          '/ ɪ ‿ nə / (Đổi vị trí ngắt âm)'
+        ],
+        ans: 1,
+        exp: '✅ <strong>B. / ɪn‿ə /</strong> — Phụ âm cuối /n/ của từ "in" nối mượt mà vào nguyên âm /ə/ của từ "a" (linking sounds).'
+      },
+    ]
+  },
+  {
+    id: 'p3',
+    label: { num: 3, title: 'Real-life Communication', sub: 'Giao tiếp thực tế — Chọn phản hồi tự nhiên nhất' },
+    questions: [
+      {
+        num: 11,
+        q: 'Your host family took great care of you during the trip. What is the most profound way to thank them?',
+        opts: [
+          '"I can\'t thank you enough for everything."',
+          '"Safe travels!"',
+          '"Drop me a text when you land."'
+        ],
+        ans: 0,
+        exp: '✅ <strong>A. "I can\'t thank you enough for everything."</strong> là cách bày tỏ sự biết ơn sâu sắc và tự nhiên nhất.'
+      },
+      {
+        num: 12,
+        q: 'Your friend says: "If you ever visit my city, you can stay at my place." You want to accept this for the future. You say:',
+        opts: [
+          '"I\'ll take you up on that offer someday!"',
+          '"I guess this is it."',
+          '"I\'ll pass that on to my dad."'
+        ],
+        ans: 0,
+        exp: '✅ <strong>A. "I\'ll take you up on that offer someday!"</strong> — Đây là câu trả lời chuẩn xác để nhận lời đề nghị thân tình.'
+      },
+      {
+        num: 13,
+        q: 'You are saying goodbye to a friend at the airport. Which phrase is best?',
+        opts: [
+          '"Safe travels! Have a smooth flight."',
+          '"My offer still stands."',
+          '"The departure hall is packed."'
+        ],
+        ans: 0,
+        exp: '✅ <strong>A. "Safe travels! Have a smooth flight."</strong> — Một lời chúc kinh điển và rất hay dùng khi tiễn ai đó đi máy bay/tàu xe.'
+      },
+      {
+        num: 14,
+        q: 'You want your friend to message you as soon as their plane arrives. You say:',
+        opts: [
+          '"Drop me a text when you land."',
+          '"Keep in touch."',
+          '"Head out when you land."'
+        ],
+        ans: 0,
+        exp: '✅ <strong>A. "Drop me a text when you land."</strong> — Câu nhờ vả nhắn tin cực kỳ phổ biến và gần gũi trong văn hóa giao tiếp hàng ngày.'
+      },
+      {
+        num: 15,
+        q: 'According to Rose at the end of the trip, what is the true meaning of studying a language?',
+        opts: [
+          '"It\'s a key that unlocks human connection."',
+          '"It helps you buy cheaper souvenirs."',
+          '"It\'s just a necessary school subject."'
+        ],
+        ans: 0,
+        exp: '✅ <strong>A. "It\'s a key that unlocks human connection."</strong> — Ngôn ngữ không chỉ là công cụ mà là chìa khóa mở ra sự kết nối thực sự giữa con người.'
+      },
+    ]
+  }
+];
+
+const OPEN_QUESTIONS = [
+  {
+    num: 16,
+    type: 'transform',
+    label: 'Sentence Transformation (Viết lại câu)',
+    instruction: 'Viết lại câu sao cho nghĩa không đổi, sử dụng cấu trúc cho sẵn.',
+    q: 'Original: <em>"I don\'t know how to thank you for giving us a ride."</em><br><br>Rewrite: "I can\'t ________________________."',
+    answer: '📝 <strong>Đáp án:</strong> "I can\'t <strong>thank you enough for giving us a ride</strong>." — Cấu trúc: <strong>I can\'t thank you enough for + V-ing/Noun.</strong>'
+  },
+  {
+    num: 17,
+    type: 'error',
+    label: 'Error Identification & Correction (Tìm và sửa lỗi sai)',
+    instruction: 'Tìm và sửa lỗi giới từ trong câu sau.',
+    q: '<em>"I\'ll definitely take you up in that offer someday!"</em>',
+    answer: '📝 <strong>Lỗi:</strong> <strong>in → on</strong>. Thành ngữ chính xác là "take someone up <strong>on</strong> an offer" (nhận lời mời).'
+  },
+  {
+    num: 18,
+    type: 'reorder',
+    label: 'Sentence Reordering (Sắp xếp từ thành câu)',
+    instruction: 'Sắp xếp các từ sau thành một câu hoàn chỉnh và có nghĩa. Chú ý dấu câu!',
+    q: '🃏 Từ cho sẵn: <em>text / land / drop / when / you / me / a / .</em>',
+    answer: '📝 <strong>Đáp án:</strong> <strong>"Drop me a text when you land."</strong> — Nghĩa là "Hãy nhắn tin cho mình khi bạn hạ cánh nhé."'
+  },
+  {
+    num: 19,
+    type: 'translate',
+    label: 'Translation & Nuance (Dịch thuật)',
+    instruction: 'Dịch câu sau sang tiếng Anh, dùng ít nhất 2 cụm từ khoá của bài học.',
+    q: '🇻🇳 <em>"Đi đường bình an nhé! Chúc cô chuyến bay suôn sẻ."</em>',
+    answer: '📝 <strong>Câu tham khảo:</strong> "<strong>Safe travels</strong>! Have a <strong>smooth flight</strong>." — Cụm từ cần có: <em>safe travels, smooth flight.</em>'
+  },
+  {
+    num: 20,
+    type: 'open',
+    label: 'Mindful Communication (Giao tiếp tình huống mở)',
+    instruction: 'Viết 1-2 câu tiếng Anh để chào tạm biệt bạn bè, chúc họ đi bình an và nhắc họ giữ liên lạc.',
+    q: '💭 <em>Gợi ý: Dùng "I guess this is it", "Safe travels" và "Keep in touch".</em>',
+    answer: '📝 <strong>Câu tham khảo:</strong> "Well, <strong>I guess this is it</strong>. <strong>Safe travels</strong> and please drop me a text when you land! Let\'s <strong>keep in touch</strong>." — Rất chân thành và tự nhiên!'
+  }
+];
+
+// =====================================================
+//  STATE
+// =====================================================
+let state = {
+  currentSet: [],    
+  answers: {},       
+  wrongSet: [],
+  isRetry: false,
+  totalMC: 15,
+  correct: 0,
+  answered: 0,
+};
+
+const ALL_MC = [];
+SECTIONS.forEach(sec => sec.questions.forEach(q => ALL_MC.push(q)));
+
+// =====================================================
+//  RENDER
+// =====================================================
+function buildQuiz(indices) {
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = '';
+
+  indices.forEach((globalIdx, i) => {
+    const qData = ALL_MC[globalIdx];
+
+    let cumulative = 0;
+    let secForThis = 0;
+    for (let s = 0; s < SECTIONS.length; s++) {
+      if (globalIdx < cumulative + SECTIONS[s].questions.length) {
+        secForThis = s;
+        break;
+      }
+      cumulative += SECTIONS[s].questions.length;
+    }
+
+    const prevGlobalIdx = i > 0 ? indices[i-1] : -1;
+    let prevSec = -1;
+    if (prevGlobalIdx >= 0) {
+      let c2 = 0;
+      for (let s = 0; s < SECTIONS.length; s++) {
+        if (prevGlobalIdx < c2 + SECTIONS[s].questions.length) { prevSec = s; break; }
+        c2 += SECTIONS[s].questions.length;
+      }
+    }
+
+    if (secForThis !== prevSec) {
+      const sec = SECTIONS[secForThis];
+      if (sec.label) {
+        area.insertAdjacentHTML('beforeend', `
+          <div class="section-label" style="animation-delay:${i*0.04}s">
+            <div class="section-num">${sec.label.num}</div>
+            <div class="section-info">
+              <h2>${sec.label.title}</h2>
+              <p>${sec.label.sub}</p>
+            </div>
+          </div>
+        `);
+      } else {
+        area.insertAdjacentHTML('beforeend', `
+          <div class="section-label" style="animation-delay:${i*0.04}s">
+            <div class="section-num">1</div>
+            <div class="section-info">
+              <h2>Vocabulary &amp; Grammar</h2>
+              <p>Từ vựng &amp; Ngữ pháp — Chọn đáp án đúng nhất</p>
+            </div>
+          </div>
+        `);
+      }
+    }
+
+    const delay = i * 0.05;
+    const alreadyAnswered = state.answers.hasOwnProperty(globalIdx);
+    const chosenIdx = alreadyAnswered ? state.answers[globalIdx] : null;
+
+    let optsHTML = '';
+    const labels = ['A', 'B', 'C', 'D'];
+    qData.opts.forEach((opt, oi) => {
+      let cls = '';
+      if (alreadyAnswered) {
+        if (oi === qData.ans) cls = 'correct';
+        else if (oi === chosenIdx) cls = 'wrong';
+      }
+      optsHTML += `
+        <button class="opt-btn ${cls}" data-gidx="${globalIdx}" data-oi="${oi}"
+          ${alreadyAnswered ? 'disabled' : ''}>
+          <span class="opt-label">${labels[oi]}</span>
+          <span>${opt}</span>
+        </button>
+      `;
+    });
+
+    area.insertAdjacentHTML('beforeend', `
+      <div class="q-card ${alreadyAnswered ? 'answered' : ''}" id="qcard-${globalIdx}" style="animation-delay:${delay}s">
+        <div class="q-header">
+          <div class="q-num">${qData.num}</div>
+          <div class="q-text">${qData.q}</div>
+        </div>
+        <div class="q-options">${optsHTML}</div>
+        <div class="explanation ${alreadyAnswered ? 'show' : ''}" id="exp-${globalIdx}">
+          ${qData.exp}
+        </div>
+      </div>
+    `);
+  });
+
+  area.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', handleAnswer);
+  });
+}
+
+function buildPart4() {
+  const area = document.getElementById('part4-area');
+  area.innerHTML = `
+    <div class="divider"></div>
+    <div class="section-label">
+      <div class="section-num" style="background:var(--accent3)">4</div>
+      <div class="section-info">
+        <h2>Advanced Application</h2>
+        <p>Tự luận &amp; Phản xạ sâu — Thể hiện kỹ năng ngôn ngữ của bạn</p>
+      </div>
+    </div>
+    <div class="part4-instruction">
+      📌 Phần này <strong>không tính điểm tự động</strong>. Hãy viết câu trả lời của bạn rồi nhấn "Xem đáp án gợi ý" để đối chiếu.
+    </div>
+  `;
+
+  OPEN_QUESTIONS.forEach((oq, i) => {
+    area.insertAdjacentHTML('beforeend', `
+      <div class="open-card" style="animation-delay:${i*0.07}s">
+        <div class="open-header">
+          <div class="q-num">${oq.num}</div>
+          <div style="flex:1">
+            <div class="open-label">${oq.label}</div>
+            <div class="open-q">${oq.instruction}</div>
+            <div class="open-q" style="margin-top:8px;padding:10px 12px;background:var(--surface2);border-radius:8px;font-size:14px">${oq.q}</div>
+          </div>
+        </div>
+        <textarea class="open-textarea" placeholder="✍️ Viết câu trả lời của bạn tại đây..." rows="3"></textarea>
+        <br>
+        <button class="show-answer-btn" onclick="toggleAnswer(${i})">
+          👁 Xem đáp án gợi ý
+        </button>
+        <div class="answer-reveal" id="ans-reveal-${i}">
+          ${oq.answer}
+        </div>
+      </div>
+    `);
+  });
+}
+
+function toggleAnswer(idx) {
+  const el = document.getElementById(`ans-reveal-${idx}`);
+  el.classList.toggle('show');
+  const btn = el.previousElementSibling;
+  btn.textContent = el.classList.contains('show') ? '🙈 Ẩn đáp án' : '👁 Xem đáp án gợi ý';
+}
+
+// =====================================================
+//  INTERACTION
+// =====================================================
+function handleAnswer(e) {
+  const btn = e.currentTarget;
+  const gidx = parseInt(btn.dataset.gidx);
+  const oi = parseInt(btn.dataset.oi);
+  const qData = ALL_MC[gidx];
+
+  if (state.answers.hasOwnProperty(gidx)) return; 
+
+  state.answers[gidx] = oi;
+  state.answered++;
+  if (oi === qData.ans) state.correct++;
+
+  const card = document.getElementById(`qcard-${gidx}`);
+  card.classList.add('answered');
+  card.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    const bOi = parseInt(b.dataset.oi);
+    if (bOi === qData.ans) b.classList.add('correct');
+    else if (bOi === oi) b.classList.add('wrong');
+  });
+
+  const exp = document.getElementById(`exp-${gidx}`);
+  exp.classList.add('show');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = state.currentSet.length;
+  const done = state.answered;
+  document.getElementById('done-count').textContent = done;
+  document.getElementById('prog-fill').style.width = (done / total * 100) + '%';
+  document.getElementById('live-score').textContent = `✓ ${state.correct} đúng`;
+}
+
+// =====================================================
+//  SUBMIT
+// =====================================================
+function submitQuiz() {
+  const total = state.currentSet.length;
+  const correct = state.correct;
+  const wrong = total - correct;
+  const pct = Math.round(correct / total * 100);
+
+  document.getElementById('submit-wrap').style.display = 'none';
+  document.getElementById('quiz-area').style.opacity = '0.55';
+
+  const scoreboard = document.getElementById('scoreboard');
+  scoreboard.style.display = 'block';
+
+  let icon, title, sub, msg;
+  if (pct >= 90) {
+    icon = '🏆'; title = 'Xuất sắc!'; sub = 'Bạn nắm vững chủ đề này rồi!';
+    msg = '"Safe travels! You\'ve mastered this topic. Your English unlocks human connection!" ✈️';
+  } else if (pct >= 70) {
+    icon = '🌟'; title = 'Rất tốt!'; sub = 'Còn vài điểm cần ôn thêm nhé!';
+    msg = '"Great effort! Review the wrong answers. See you soon on the next journey!" 🌅';
+  } else if (pct >= 50) {
+    icon = '📚'; title = 'Cố lên!'; sub = 'Hãy ôn lại phần chưa vững.';
+    msg = '"Just a heads-up, reviewing the key structures will help you feel at home with this!" 🏡';
+  } else {
+    icon = '💪'; title = 'Thử lại nào!'; sub = 'Đừng nản — mỗi lần làm lại là một bước tiến.';
+    msg = '"Don\'t give up! Every ending is just a beautiful beginning of learning." 🌱';
+  }
+
+  document.getElementById('score-icon').textContent = icon;
+  document.getElementById('score-title').textContent = title;
+  document.getElementById('score-sub').textContent = sub;
+  document.getElementById('pct-num').textContent = pct + '%';
+  document.getElementById('correct-num').textContent = correct;
+  document.getElementById('wrong-num').textContent = wrong;
+  document.getElementById('score-msg').textContent = msg;
+
+  state.wrongSet = state.currentSet.filter(gidx => {
+    return state.answers.hasOwnProperty(gidx) && state.answers[gidx] !== ALL_MC[gidx].ans;
+  });
+
+  if (state.wrongSet.length === 0) {
+    document.getElementById('retry-btn').style.display = 'none';
+  }
+
+  scoreboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// =====================================================
+//  RETRY / RESET
+// =====================================================
+function startRetry() {
+  if (state.wrongSet.length === 0) return;
+
+  state.currentSet = state.wrongSet;
+  state.answers = {};
+  state.correct = 0;
+  state.answered = 0;
+  state.isRetry = true;
+
+  document.getElementById('scoreboard').style.display = 'none';
+  document.getElementById('submit-wrap').style.display = 'block';
+  document.getElementById('quiz-area').style.opacity = '1';
+
+  const notice = document.getElementById('retry-mode-notice');
+  notice.style.display = 'block';
+  document.getElementById('retry-count').textContent = state.wrongSet.length;
+
+  document.getElementById('done-count').textContent = '0';
+  document.getElementById('done-count').parentElement.querySelector('strong') &&
+    (document.getElementById('done-count').textContent = '0');
+  document.querySelector('.progress-text').innerHTML = `Câu <strong id="done-count">0</strong> / ${state.currentSet.length}`;
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('live-score').textContent = '✓ 0 đúng';
+
+  buildQuiz(state.currentSet);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAll() {
+  state.currentSet = ALL_MC.map((_, i) => i);
+  state.answers = {};
+  state.correct = 0;
+  state.answered = 0;
+  state.wrongSet = [];
+  state.isRetry = false;
+
+  document.getElementById('scoreboard').style.display = 'none';
+  document.getElementById('submit-wrap').style.display = 'block';
+  document.getElementById('quiz-area').style.opacity = '1';
+  document.getElementById('retry-mode-notice').style.display = 'none';
+
+  document.querySelector('.progress-text').innerHTML = `Câu <strong id="done-count">0</strong> / ${state.totalMC}`;
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('live-score').textContent = '✓ 0 đúng';
+
+  buildQuiz(state.currentSet);
+  buildPart4();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =====================================================
+//  INIT
+// =====================================================
+(function init() {
+  state.currentSet = ALL_MC.map((_, i) => i);
+  buildQuiz(state.currentSet);
+  buildPart4();
+})();
+</script>
+</body>
+</html>
