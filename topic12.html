@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework: A Bittersweet Farewell 👋</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=pVaOHrtc"></script>
+<style>
+:root {
+    --bg: #Fcfaf8; --card: #ffffff; --brd: #e5e7eb; --text: #1f2937; 
+    --mut: #6b7280; --pri: #f43f5e; --sec: #0ea5e9; --suc: #10b981; --err: #ef4444; --warn: #f59e0b;
+}
+html { font-size: 16px; }
+@media (min-width: 1024px) { html { font-size: 18px; } }
+@media (max-width: 768px) { html { font-size: 15px; } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px}
+button{cursor:pointer;transition:all .2s;font-family:inherit;border:none;outline:none}
+button:hover{opacity:.85;transform:translateY(-1px)}
+button:disabled{cursor:not-allowed;opacity:1!important;transform:none!important}
+input, textarea{font-family:inherit;background:#f9fafb;border:1px solid var(--brd);color:var(--text);padding:1rem 1.2rem;border-radius:16px;width:100%;outline:none;font-size:1rem;resize:none}
+input:focus, textarea:focus{border-color:var(--sec);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+.card{background:var(--card);border:1px solid var(--brd);border-radius:24px;padding:2rem;margin-bottom:1.5rem;box-shadow:0 8px 30px rgba(0,0,0,0.03)}
+.sub-nav{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;justify-content:center}
+.sub-btn{padding:0.75rem 1.25rem;border-radius:12px;font-size:0.95rem;font-weight:600;background:var(--card);color:var(--mut);border:1px solid var(--brd);box-shadow:0 2px 5px rgba(0,0,0,0.02)}
+.sub-btn.active{background:rgba(14,165,233,.08);color:var(--sec);border-color:rgba(14,165,233,.3)}
+.opt{padding:1rem 1.25rem;border-radius:16px;border:1px solid var(--brd);background:#f9fafb;font-weight:600;width:100%;text-align:left;transition:all 0.2s;}
+.opt:hover:not(:disabled){background:#f3f4f6}
+.ok{background:#ecfdf5!important;border-color:var(--suc)!important;color:#047857!important}
+.no{background:#fef2f2!important;border-color:var(--err)!important;color:#b91c1c!important}
+.game-card{background:var(--card);border:2px solid var(--brd);border-radius:16px;padding:1.25rem;text-align:center;font-weight:700;font-size:1.05rem;cursor:pointer;min-height:80px;display:flex;align-items:center;justify-content:center}
+.game-card.selected{border-color:var(--sec);background:rgba(14,165,233,.08);color:var(--sec)}
+.game-card.matched{opacity:0;pointer-events:none;transform:scale(0.9)}
+.fc-page-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--brd);background:var(--card);color:var(--mut);font-weight:700;display:flex;align-items:center;justify-content:center}
+.fc-page-btn.active{background:rgba(14,165,233,.1);color:var(--sec);border-color:rgba(14,165,233,.3)}
+.exp-box {margin-top:0.75rem; padding:1rem; border-radius:12px; font-weight:600; font-size:0.95rem; display:none;}
+.exp-box.show {display:block;}
+.exp-ok {background:#f0fdf4; color:#166534; border:1px solid #bbf7d0;}
+.exp-no {background:#fff1f2; color:#9f1239; border:1px solid #fecdd3;}
+
+/* STYLES FOR LISTEN & ARRANGE */
+.la-block { display:inline-block; padding:0.75rem 1.25rem; margin:0.25rem; border-radius:12px; background:#fff; border:2px solid var(--sec); color:var(--sec); font-weight:700; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.05); user-select:none; }
+.la-block:hover { background:var(--sec); color:#fff; }
+.la-area { min-height:100px; background:#f8fafc; border:2px dashed var(--brd); border-radius:16px; padding:1rem; margin-bottom:1.5rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:0.5rem; }
+
+/* STYLES FOR ROLEPLAY */
+.rp-chat { display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem; }
+.rp-msg { max-width:80%; padding:1rem 1.5rem; border-radius:20px; font-weight:500; font-size:1.1rem; line-height:1.5; }
+.rp-msg.sarah { background:#f0f9ff; color:#0369a1; border-bottom-left-radius:4px; align-self:flex-start; }
+.rp-msg.rose { background:#fff1f2; color:#be123c; border-bottom-right-radius:4px; align-self:flex-end; }
+.rp-msg.narrator { background:#f3f4f6; color:#4b5563; border-radius:16px; align-self:center; font-style:italic; font-size:1rem; text-align:center;}
+</style>
+</head>
+<body>
+<div style="width:100%;max-width:1200px;margin:0 auto;padding:2rem 4%">
+    <div style="text-align:center;margin-bottom:2.5rem">
+        <h1 style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--text);margin-bottom:0.75rem">👋 Homework: A Bittersweet Farewell</h1>
+        <p style="color:var(--sec);font-size:1.1rem;font-weight:600">Tự luyện tập tại nhà - Topic 12</p>
+    </div>
+    <div id="app"></div>
+</div>
+
+<script>
+// --- DATA ---
+const V=[
+{id:1,en:"see someone off",vi:"tiễn ai đó",ipa:"/siː ˈsʌmwʌn ɒf/",ex:"I rode along to see them off."},
+{id:2,en:"head out",vi:"rời đi",ipa:"/hɛd aʊt/",ex:"I honestly can't believe it's time to head out."},
+{id:3,en:"I guess this is it",vi:"chắc là đến lúc rồi",ipa:"/aɪ ɡɛs ðɪs ɪz ɪt/",ex:"Well, I guess this is it."},
+{id:4,en:"I can't thank you enough",vi:"không biết cảm ơn thế nào cho đủ",ipa:"/aɪ kænt θæŋk juː ɪˈnʌf/",ex:"Rose, I can't thank you enough for everything."},
+{id:5,en:"pass that on",vi:"truyền đạt lại / chuyển lời",ipa:"/pæs ðæt ɒn/",ex:"I'll definitely pass that on to my dad."},
+{id:6,en:"my offer still stands",vi:"lời mời vẫn còn hiệu lực",ipa:"/maɪ ˈɒfər stɪl stændz/",ex:"Listen, my offer still stands."},
+{id:7,en:"take you up on that offer",vi:"nhận lời mời đó",ipa:"/teɪk juː ʌp ɒn ðæt ˈɒfər/",ex:"I'll definitely take you up on that offer someday!"},
+{id:8,en:"safe travels",vi:"thượng lộ bình an",ipa:"/seɪf ˈtrævəlz/",ex:"Safe travels, Sarah!"},
+{id:9,en:"drop me a text",vi:"nhắn cho mình một tin",ipa:"/drɒp miː ə tɛkst/",ex:"Drop me a text when you land, okay?"},
+{id:10,en:"keep in touch",vi:"giữ liên lạc",ipa:"/kiːp ɪn tʌtʃ/",ex:"I will for sure. Keep in touch!"}
+];
+
+const storyLines = [
+  {en:"The next morning, since I don't drive a car, I asked my dad to help take Sarah and her family to Da Nang International Airport.", vi:"Sáng hôm sau, vì mình không lái xe ô tô, mình nhờ bố chở gia đình Sarah ra Sân bay Quốc tế Đà Nẵng.", ipa:"/ðə nɛkst ˈmɔːrnɪŋ sɪns aɪ doʊnt draɪv ə kɑːr aɪ æskt maɪ dæd tuː hɛlp teɪk ˈsɛrə ænd hɜːr ˈfæmɪli tuː dɑː næŋ ˌɪntərˈnæʃənəl ˈɛərpɔːrt/"},
+  {en:"I rode along to see them off.", vi:"Mình đi cùng để tiễn họ.", ipa:"/aɪ roʊd əˈlɒŋ tuː siː ðɛm ɒf/"},
+  {en:"The departure hall was packed, but we managed to find a quiet corner near the check-in counters for one last hug.", vi:"Sảnh khởi hành đông nghịt, nhưng tụi mình tìm được một góc yên tĩnh gần quầy check-in để ôm tạm biệt lần cuối.", ipa:"/ðə dɪˈpɑːrtʃər hɔːl wɒz pækt bʌt wiː ˈmænɪdʒd tuː faɪnd ə ˈkwaɪət ˈkɔːrnər nɪər ðə tʃɛk-ɪn ˈkaʊntərz fɔːr wʌn læst hʌɡ/"},
+  {en:"Sarah: 'Well, I guess this is it. I honestly can't believe it's time to head out.'", vi:"Sarah: 'Chắc là đến lúc rồi. Cô không thể tin đã đến lúc đi.'", ipa:"/ˈsɛrə wɛl aɪ ɡɛs ðɪs ɪz ɪt aɪ ˈɒnɪstli kænt bɪˈliːv ɪts taɪm tuː hɛd aʊt/"},
+  {en:"Sarah: 'The last two weeks went by in a flash.'", vi:"Sarah: 'Hai tuần vừa rồi trôi qua trong chớp mắt.'", ipa:"/ˈsɛrə ðə læst tuː wiːks wɛnt baɪ ɪn ə flæʃ/"},
+  {en:"Rose: 'They really did! It's always bittersweet saying goodbye.'", vi:"Rose: 'Đúng vậy ạ! Chia tay lúc nào cũng vừa vui vừa buồn.'", ipa:"/roʊz ðeɪ ˈrɪəli dɪd ɪts ˈɔːlweɪz ˈbɪtərswiːt ˈseɪɪŋ ɡʊdˈbaɪ/"},
+  {en:"Rose: 'Did you manage to fit all those gifts into your bags?'", vi:"Rose: 'Cô có nhét hết quà vào vali được không?'", ipa:"/roʊz dɪd juː ˈmænɪdʒ tuː fɪt ɔːl ðoʊz ɡɪfts ˈɪntuː jʊər bæɡz/"},
+  {en:"Sarah: 'Barely! My suitcase is packed to the brim. It's mostly the coffee and those Anatta dried bananas!'", vi:"Sarah: 'Suýt không được! Vali cô đầy ắp. Chủ yếu là cà phê và chuối sấy Anatta!'", ipa:"/ˈsɛrə ˈbɛərli maɪ ˈsuːtkeɪs ɪz pækt tuː ðə brɪm ɪts ˈmoʊstli ðə ˈkɒfi ænd ðoʊz əˈnætə draɪd bəˈnænəz/"},
+  {en:"Rose: 'Haha, that's the best kind of extra weight to carry!'", vi:"Rose: 'Haha, đó là loại cân thừa tuyệt nhất!'", ipa:"/roʊz hɑːhɑː ðæts ðə bɛst kaɪnd ɒv ˈɛkstrə weɪt tuː ˈkæri/"},
+  {en:"Rose: 'I really hope your friends and family in New Zealand love a little taste of Vietnam.'", vi:"Rose: 'Cháu hy vọng gia đình và bạn bè cô ở New Zealand sẽ thích một chút hương vị Việt Nam.'", ipa:"/roʊz aɪ ˈrɪəli hoʊp jʊər frɛndz ænd ˈfæmɪli ɪn njuː ˈziːlənd lʌv ə ˈlɪtəl teɪst ɒv ˌviɛtˈnɑːm/"},
+  {en:"Sarah: 'I know they will. Rose... I can't thank you enough for everything.'", vi:"Sarah: 'Cô biết họ sẽ thích. Rose... Cô không biết cảm ơn cháu thế nào cho đủ.'", ipa:"/ˈsɛrə aɪ noʊ ðeɪ wɪl roʊz aɪ kænt θæŋk juː ɪˈnʌf fɔːr ˈɛvrɪθɪŋ/"},
+  {en:"Sarah: 'And please thank your dad again for giving us a ride!'", vi:"Sarah: 'Và làm ơn cảm ơn bố cháu lần nữa vì đã chở tụi cô đi!'", ipa:"/ˈsɛrə ænd pliːz θæŋk jʊər dæd əˈɡɛn fɔːr ˈɡɪvɪŋ ʌs ə raɪd/"},
+  {en:"Sarah: 'You didn't just teach me some Vietnamese phrases; you and your family showed us the soul of this place.'", vi:"Sarah: 'Cháu không chỉ dạy cô vài câu tiếng Việt; cháu và gia đình đã cho tụi cô thấy linh hồn của nơi này.'", ipa:"/ˈsɛrə juː dɪdnt dʒʌst tiːtʃ miː sʌm ˌviɛtnəˈmiːz ˈfreɪzɪz juː ænd jʊər ˈfæmɪli ʃoʊd ʌs ðə soʊl ɒv ðɪs pleɪs/"},
+  {en:"Sarah: 'We came as tourists, but we're leaving feeling like locals.'", vi:"Sarah: 'Tụi cô đến như du khách, rời đi với cảm giác như người địa phương.'", ipa:"/ˈsɛrə wiː keɪm æz ˈtʊərɪsts bʌt wɪər ˈliːvɪŋ ˈfiːlɪŋ laɪk ˈloʊkəlz/"},
+  {en:"Rose: 'I'll definitely pass that on to my dad. And that is the best compliment I could ever ask for, Sarah. I'm so grateful we met.'", vi:"Rose: 'Cháu sẽ truyền đạt lại với bố ạ. Và đó là lời khen tuyệt vời nhất cháu có thể nhận, Sarah. Cháu rất biết ơn vì chúng ta đã gặp nhau.'", ipa:"/roʊz aɪl ˈdɛfɪnɪtli pæs ðæt ɒn tuː maɪ dæd ænd ðæt ɪz ðə bɛst ˈkɒmplɪmənt aɪ kʊd ˈɛvər æsk fɔːr ˈsɛrə aɪm soʊ ˈɡreɪtfʊl wiː mɛt/"},
+  {en:"Sarah: 'Listen, my offer still stands. If you ever want to explore New Zealand, you've got a place to stay with us. Our door is always open.'", vi:"Sarah: 'Nghe này, lời mời của cô vẫn còn hiệu lực. Nếu cháu muốn đến New Zealand, cháu có chỗ ở với gia đình cô. Cửa nhà cô luôn mở.'", ipa:"/ˈsɛrə ˈlɪsən maɪ ˈɒfər stɪl stændz ɪf juː ˈɛvər wɒnt tuː ɪkˈsplɔːr njuː ˈziːlənd juːv ɡɒt ə pleɪs tuː steɪ wɪð ʌs ˈaʊər dɔːr ɪz ˈɔːlweɪz ˈoʊpən/"},
+  {en:"Rose: 'I'll definitely take you up on that offer someday! Now, you better get going before the security line gets too long.'", vi:"Rose: 'Cháu chắc chắn sẽ nhận lời mời đó một ngày nào đó! Giờ cô đi đi kẻo hàng an ninh đông.'", ipa:"/roʊz aɪl ˈdɛfɪnɪtli teɪk juː ʌp ɒn ðæt ˈɒfər ˈsʌmdeɪ naʊ juː ˈbɛtər ɡɛt ˈɡoʊɪŋ bɪˈfɔːr ðə sɪˈkjʊərɪti laɪn ɡɛts tuː lɒŋ/"},
+  {en:"Sarah: 'You're right. We should head in. Thank you again, Rose. For everything.'", vi:"Sarah: 'Cô đi đây. Cảm ơn cháu lần nữa, Rose. Vì tất cả.'", ipa:"/ˈsɛrə jʊər raɪt wiː ʃʊd hɛd ɪn θæŋk juː əˈɡɛn roʊz fɔːr ˈɛvrɪθɪŋ/"},
+  {en:"Rose: 'Safe travels, Sarah! Have a smooth flight and drop me a text when you land, okay?'", vi:"Rose: 'Đi đường bình an! Chúc cô chuyến bay suôn sẻ và nhắn cho cháu khi hạ cánh nhé?'", ipa:"/roʊz seɪf ˈtrævəlz ˈsɛrə hæv ə smuːð flaɪt ænd drɒp miː ə tɛkst wɛn juː lænd oʊˈkeɪ/"},
+  {en:"Sarah: 'I will for sure. Keep in touch! See you soon!'", vi:"Sarah: 'Cô chắc chắn sẽ nhắn. Giữ liên lạc nhé! Hẹn gặp lại sớm!'", ipa:"/ˈsɛrə aɪ wɪl fɔːr ʃʊər kiːp ɪn tʌtʃ siː juː suːn/"},
+  {en:"I stood there and watched them wave one last time before disappearing behind the security gates.", vi:"Mình đứng đó nhìn họ vẫy tay lần cuối trước khi khuất sau cổng an ninh.", ipa:"/aɪ stʊd ðɛər ænd wɒtʃt ðɛm weɪv wʌn læst taɪm bɪˈfɔːr ˌdɪsəˈpɪərɪŋ bɪˈhaɪnd ðə sɪˈkjʊərɪti ɡeɪts/"},
+  {en:"Riding back to the city with my dad, I realized what studying a language is really all about. It's a key that unlocks human connection.", vi:"Trên đường đi xe về thành phố với bố, mình nhận ra việc học một ngôn ngữ thực sự mang ý nghĩa gì. Đó là chiếc chìa khóa mở ra sự kết nối giữa con người với con người.", ipa:"/ˈraɪdɪŋ bæk tuː ðə ˈsɪti wɪð maɪ dæd aɪ ˈriːəlaɪzd wɒt ˈstʌdiɪŋ ə ˈlæŋɡwɪdʒ ɪz ˈrɪəli ɔːl əˈbaʊt ɪts ə kiː ðæt ʌnˈlɒks ˈhjuːmən kəˈnɛkʃən/"},
+  {en:"This wasn't an ending. It was just the beautiful beginning of a lifelong friendship.", vi:"Đây không phải là kết thúc. Nó chỉ là một khởi đầu tuyệt đẹp cho một tình bạn trọn đời.", ipa:"/ðɪs ˈwɒzənt ən ˈɛndɪŋ ɪt wɒz dʒʌst ðə ˈbjuːtɪfʊl bɪˈɡɪnɪŋ ɒv ə ˈlaɪflɒŋ ˈfrɛndʃɪp/"}
+];
+
+const PQ = [
+  {q:"Từ <b style='color:var(--sec)'>'packed'</b> có đuôi -ed được phát âm là gì?", o:["/t/", "/d/", "/ɪd/"], a:0, exp:"💡 Sau âm vô thanh /k/ (pack), đuôi 'ed' được phát âm là <b>/t/</b>."},
+  {q:"Từ <b style='color:var(--sec)'>'travels'</b> có âm cuối -s được phát âm là gì?", o:["/s/", "/z/", "/ɪz/"], a:1, exp:"💡 Sau âm /l/ (travel - âm hữu thanh), đuôi 's' được phát âm là <b>/z/</b>."},
+  {q:"Cụm từ <b style='color:var(--sec)'>'went by in a flash'</b> khi nối âm sẽ nghe như thế nào?", o:["/ ɪn - ə /", "/ ɪn‿ə /"], a:1, exp:"💡 Phụ âm cuối /n/ của 'in' nối liền với nguyên âm /ə/ tạo thành <b>/ ɪn‿ə /</b> giúp câu nói mượt hơn."},
+  {q:"Câu cảm thán <b style='color:var(--sec)'>'Safe travels!'</b> có ngữ điệu như thế nào?", o:["Lên giọng ở cuối câu (↗)", "Xuống giọng ở cuối câu (↘)", "Giữ âm bằng đều (→)"], a:1, exp:"💡 Câu mệnh lệnh, câu chúc mừng thường <b>xuống giọng ở cuối câu (↘)</b> để thể hiện sự chân thành và dứt khoát."},
+  {q:"Câu hỏi <b style='color:var(--sec)'>'Did you manage to fit all those gifts...?'</b> có ngữ điệu như thế nào?", o:["Lên giọng ở cuối câu (↗)", "Xuống giọng ở cuối câu (↘)"], a:0, exp:"💡 Câu hỏi Yes/No luôn <b>lên giọng ở cuối câu (↗)</b> để thể hiện sự mong đợi câu trả lời xác nhận."}
+];
+
+const KSQ = [
+  {q:"Để diễn tả sự biết ơn sâu sắc, bạn dùng cấu trúc nào?", o:["I thank you enough.", "I can't thank you enough for everything.", "I can't thank you much."], a:1, exp:"💡 Cấu trúc đúng là: <b>I can't thank you enough for + Noun / V-ing</b> (Tôi không biết cảm ơn thế nào cho đủ về...)."},
+  {q:"Để nhắc lại một lời mời trước đó vẫn còn giá trị, bạn nói thế nào?", o:["My offer still stands.", "My offer is standing.", "My offer is still here."], a:0, exp:"💡 Cụm từ cố định (Idiom): <b>My offer still stands</b> (Lời mời/đề nghị của tôi vẫn còn hiệu lực)."},
+  {q:"Dịch câu: 'Tôi sẽ nhận lời mời đó của bạn'.", o:["I'll take you up on that offer.", "I'll take your offer up.", "I'll accept you on that offer."], a:0, exp:"💡 Cụm động từ <b>take someone up on an offer</b> nghĩa là chấp nhận một lời mời hoặc đề nghị từ ai đó."},
+  {q:"Nếu bạn muốn nhờ ai đó nhắn tin cho bạn khi đến nơi, bạn nói gì?", o:["Drop me a text when you land.", "Fall me a text when you land.", "Give me a text down when you land."], a:0, exp:"💡 Dùng cụm <b>Drop me a text/line</b> là cách nói tự nhiên, thân thiện để nhờ ai đó nhắn tin cho mình."}
+];
+
+// --- SETUP ---
+let tab = 'flashcard'; 
+let fcM='flip', fi=0, fcFlip=false, qO=[], qFb=null, tV='', tFb=null;
+let micRec=false, micAudioUrl=null, micStream=null, micMR=null, micChunks=[];
+
+// --- STATE: LISTEN & ARRANGE ---
+let laIdx=0, laPool=[], laSelected=[], laFb=null, lastLaIdx=-1;
+
+// --- STATE: ROLEPLAY ---
+let rpRole='Sarah', rpIdx=0;
+
+// --- STATE: BLIND SHADOWING ---
+let bsIdx=0, bsShow=false;
+
+// --- STATE: GAMES ---
+let gameTab='matching';
+let gameCards=[], gameSelected=[], gameMatched=[];
+let lrWord=null, lrOpts=[], lrScore=0, lrTimer=null, lrTimeLeft=5;
+let lrFb=null, lrClicked=null; 
+
+let pqA={}, ksqA={};
+
+let bv=null;function ldv(){if(!('speechSynthesis' in window))return;const vs=speechSynthesis.getVoices();if(!vs.length)return;['Microsoft Aria Online','Google US English','Samantha','Microsoft Zira'].some(p=>{const f=vs.find(x=>x.name.includes(p));if(f){bv=f;return true}});if(!bv)bv=vs.find(x=>x.lang==='en-US')||vs[0]}
+if('speechSynthesis' in window){ldv();speechSynthesis.onvoiceschanged=ldv}
+
+function say(t,r=0.9, onEndCb=null){
+    if(!t)return;
+    t = t.replace(/^(Sarah|Rose):\s*['"]?|['"]?$/g, '').trim();
+    if(window.responsiveVoice&&responsiveVoice.voiceSupport()){
+        responsiveVoice.cancel();
+        responsiveVoice.speak(t, 'US English Female', {rate:r, pitch:1.05, onend: onEndCb});
+        return;
+    }
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const u=new SpeechSynthesisUtterance(t);
+        u.lang='en-US'; u.rate=r; if(bv)u.voice=bv;
+        if(onEndCb) u.onend = onEndCb;
+        speechSynthesis.speak(u);
+    } else {
+        if(onEndCb) onEndCb();
+    }
+}
+
+function esc(s){return s.replace(/'/g,"\\'").replace(/"/g,"&quot;")}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function norm(s){return (s||'').toLowerCase().replace(/[^a-z0-9]/g, '');}
+
+// --- INIT FUNCTIONS ---
+function initLA() {
+    let text = storyLines[laIdx].en.replace(/^(Sarah|Rose):\s*['"]?|['"]?$/g, '').trim();
+    let words = text.match(/[\p{L}0-9_’'-]+/gu) || [];
+    laPool = shuffle(words.map((w, i) => ({id: i, text: w})));
+    laSelected = [];
+    laFb = null;
+}
+function moveLA(id, toSelected) {
+    if(toSelected) {
+        let item = laPool.find(x => x.id === id);
+        if(item) { laPool = laPool.filter(x => x.id !== id); laSelected.push(item); }
+    } else {
+        let item = laSelected.find(x => x.id === id);
+        if(item) { laSelected = laSelected.filter(x => x.id !== id); laPool.push(item); }
+    }
+    R();
+}
+function checkLA() {
+    let original = storyLines[laIdx].en.replace(/^(Sarah|Rose):\s*['"]?|['"]?$/g, '').trim();
+    let current = laSelected.map(b => b.text).join(' ');
+    laFb = (norm(original) === norm(current));
+    R();
+}
+
+function initGameMatching(){
+    const pool = [...V].sort(()=>Math.random()-.5).slice(0, 6);
+    let cards = [];
+    pool.forEach(v=>{cards.push({id:v.id, type:'en', text:v.en}); cards.push({id:v.id, type:'vi', text:v.vi});});
+    gameCards = cards.sort(()=>Math.random()-.5);
+    gameSelected = []; gameMatched = [];
+}
+
+function initLR(){
+    clearInterval(lrTimer);
+    lrFb = null;
+    lrClicked = null;
+    lrWord = V[Math.floor(Math.random() * V.length)];
+    let others = shuffle(V.filter(v => v.id !== lrWord.id)).slice(0, 3);
+    lrOpts = shuffle([lrWord, ...others]);
+    lrTimeLeft = 5;
+    
+    lrTimer = setInterval(() => {
+        lrTimeLeft--;
+        if(lrTimeLeft <= 0) { 
+            clearInterval(lrTimer); 
+            lrFb = false;
+            R();
+            setTimeout(() => { nextLR(); }, 1500); 
+        } else {
+            R();
+        }
+    }, 1000);
+    say(lrWord.en);
+    R();
+}
+
+function checkLR(id) {
+    if (lrFb !== null) return;
+    clearInterval(lrTimer);
+    lrClicked = id;
+    lrFb = (id === lrWord.id);
+    if(lrFb) lrScore++;
+    R();
+    setTimeout(() => { nextLR(); }, 1500);
+}
+function nextLR() {
+    initLR();
+}
+
+function toggleMic(){
+    if(micRec){
+        if(micMR && micMR.state==='recording') micMR.stop();
+        if(micStream) micStream.getTracks().forEach(t=>t.stop());
+        micRec = false; R(); return;
+    }
+    micAudioUrl = null; micChunks = [];
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+        micStream = stream; const mr = new MediaRecorder(stream); micMR = mr;
+        mr.ondataavailable = e => { if(e.data.size>0) micChunks.push(e.data) };
+        mr.onstop = () => {const blob = new Blob(micChunks, {type:'audio/webm'}); micAudioUrl = URL.createObjectURL(blob); micStream?.getTracks().forEach(t=>t.stop()); micStream = null; micMR = null; R();};
+        mr.start(); micRec = true; R();
+    }).catch(()=>{alert('Không thể truy cập microphone.'); micRec=false; R();});
+}
+
+function gQ(){const w=V[fi]; qO=shuffle([w,...shuffle(V.filter(x=>x.id!==w.id)).slice(0,3)]); qFb=null;}
+
+// --- RENDER ---
+function R(){
+    const app=document.getElementById('app');
+    let html = `
+        <div class="sub-nav">
+            <button class="sub-btn ${tab==='flashcard'?'active':''}" onclick="tab='flashcard';R()">1. Flashcard</button>
+            <button class="sub-btn ${tab==='la'?'active':''}" onclick="tab='la';R()">2. Listen & Arrange</button>
+            <button class="sub-btn ${tab==='roleplay'?'active':''}" onclick="tab='roleplay';R()">3. Roleplay</button>
+            <button class="sub-btn ${tab==='blind'?'active':''}" onclick="tab='blind';R()">4. Blind Shadowing</button>
+            <button class="sub-btn ${tab==='exercise'?'active':''}" onclick="tab='exercise';R()">5. Exercises</button>
+            <button class="sub-btn ${tab==='game'?'active':''}" onclick="tab='game';R()">6. Games</button>
+        </div>
+    `;
+
+    if(tab === 'flashcard'){
+        const w = V[fi];
+        const ms=[{k:'flip',l:'🃏 Lật thẻ'},{k:'quiz',l:'📝 Trắc nghiệm'},{k:'type',l:'⌨️ Gõ từ'},{k:'say',l:'🔊 Phát âm'}];
+        const mi=ms.findIndex(m=>m.k===fcM);
+        
+        html += `<div class="card" style="padding:1.5rem">
+            <div style="display:flex;gap:0.5rem;margin-bottom:1.5rem">
+                ${ms.map((_,i)=>`<div style="flex:1;height:6px;border-radius:3px;background:${i<=mi?'var(--pri)':'var(--brd)'}"></div>`).join('')}
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+                    ${ms.map(m=>`<button onclick="fcM='${m.k}';fi=0;fcFlip=false;qFb=null;tFb=null;tV='';micAudioUrl=null;if(m.k==='quiz')gQ();R()" class="sub-btn ${fcM===m.k?'active':''}">${m.l}</button>`).join('')}
+                </div>
+                <span style="color:var(--mut);font-size:1.1rem;font-weight:800">${fi+1}/${V.length}</span>
+            </div>
+        </div>`;
+
+        if(fcM === 'flip'){
+            html += `<div class="card" onclick="fcFlip=!fcFlip;if(fcFlip)say('${esc(w.en)}');R()" style="min-height:400px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:${fcFlip?'rgba(244,63,94,.02)':'#ffffff'};border:2px solid ${fcFlip?'rgba(244,63,94,.15)':'var(--brd)'}">
+                ${!fcFlip ? `<div style="font-size:2.2rem;font-weight:800;margin-bottom:1rem;text-align:center">${w.en}</div><div style="font-size:1.2rem;color:var(--mut);font-family:monospace">${w.ipa}</div><div style="position:absolute;bottom:2rem;color:var(--sec);font-size:1.1rem;font-weight:700">Bấm để lật thẻ 👆</div>` : `<div style="font-size:1.8rem;font-weight:800;color:var(--pri);margin-bottom:0.75rem;text-align:center">${w.en}</div><div style="font-size:1.3rem;margin-bottom:1.5rem;font-weight:700">${w.vi}</div><div style="font-size:1.1rem;color:var(--mut);font-style:italic;text-align:center;margin-bottom:2rem;max-width:80%">"${w.ex}"</div><button onclick="event.stopPropagation();say('${esc(w.en)}')" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800;font-size:1.1rem">🔊 Nghe phát âm</button>`}
+            </div>
+            <button onclick="if(fi<V.length-1){fi++;fcFlip=false;R()}else{fcM='quiz';fi=0;gQ();R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'→ Chuyển sang Trắc nghiệm'}</button>`;
+        }
+        else if(fcM === 'quiz'){
+            if(!qO.length) gQ();
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Chọn nghĩa đúng nhất:</div>
+                <div style="font-size:2rem;font-weight:800;margin-bottom:2.5rem">${w.en}</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    ${qO.map(o=>`<button onclick="qFb=${o.id===w.id?1:0};setTimeout(()=>{if(fi<V.length-1){fi++;qFb=null;gQ()}else{fcM='type';fi=0;qFb=null};R()},1200);R()" class="opt ${qFb!==null?(o.id===w.id?'ok':(qFb===0?'no':'')):''}" ${qFb!==null?'disabled':''}>${o.vi}</button>`).join('')}
+                </div>
+                ${qFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${qFb?'#ecfdf5':'#fef2f2'};color:${qFb?'var(--suc)':'var(--err)'};font-weight:800">${qFb?'✅ Tuyệt vời!':'❌ Đáp án: '+w.vi}</div>` : ''}
+            </div>`;
+        }
+        else if(fcM === 'type'){
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="color:var(--mut);margin-bottom:1rem;font-weight:700">Nghe và gõ lại từ vựng:</div>
+                <div style="font-size:1.8rem;font-weight:800;color:var(--sec);margin-bottom:1.5rem">${w.vi}</div>
+                <button onclick="say('${esc(w.en)}')" style="padding:1rem 2.5rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800;margin-bottom:2.5rem">🔊 Nghe đọc</button>
+                <div style="display:flex;gap:1rem;max-width:500px;margin:0 auto">
+                    <input id="fcTypeInp" value="${tV}" placeholder="Gõ tiếng Anh..." onkeydown="if(event.key==='Enter')chkFcType()">
+                    <button onclick="chkFcType()" style="padding:1rem 2rem;border-radius:16px;background:var(--sec);color:#fff;font-weight:800">Check</button>
+                </div>
+                ${tFb!==null ? `<div style="margin-top:1.5rem;padding:1.25rem;border-radius:16px;background:${tFb?'#ecfdf5':'#fef2f2'};color:${tFb?'var(--suc)':'var(--err)'};font-weight:800">${tFb?'✅ Chuẩn xác!':'❌ Đáp án: '+w.en}</div>` : ''}
+            </div>`;
+        }
+        else if(fcM === 'say'){
+            html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+                <div style="font-size:2.2rem;font-weight:800;margin-bottom:0.75rem">${w.en}</div>
+                <div style="font-size:1.2rem;color:var(--mut);font-family:monospace;margin-bottom:1rem">${w.ipa}</div>
+                <div style="font-size:1.2rem;color:var(--pri);font-weight:700;margin-bottom:2.5rem">${w.vi}</div>
+                <div style="margin-bottom:2.5rem">
+                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.25rem;font-weight:800">① Lắng nghe giọng chuẩn</div>
+                    <div style="display:flex;gap:1rem;justify-content:center">
+                        <button onclick="say('${esc(w.en)}', 0.7)" style="padding:1rem 2rem;border-radius:16px;background:rgba(14,165,233,.1);color:var(--sec);font-weight:800">🐢 0.7x</button>
+                        <button onclick="say('${esc(w.en)}', 1.0)" style="padding:1rem 2rem;border-radius:16px;background:rgba(244,63,94,.1);color:var(--pri);font-weight:800">🔊 1.0x</button>
+                    </div>
+                </div>
+                <div style="padding-top:2.5rem;border-top:2px dashed var(--brd)">
+                    <div style="font-size:1.05rem;color:var(--mut);margin-bottom:1.5rem;font-weight:800">② Ghi âm giọng của bạn</div>
+                    <button onclick="toggleMic()" style="padding:1.25rem 3rem;border-radius:20px;font-weight:800;font-size:1.2rem;color:#fff;background:${micRec?'var(--err)':'var(--sec)'};box-shadow:${micRec?'0 0 25px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
+                        ${micRec?'⏹️ Dừng ghi âm':'🎙️ Bấm để nói'}
+                    </button>
+                    ${micAudioUrl && !micRec ? `<div style="margin-top:2rem"><button onclick="new Audio('${micAudioUrl}').play()" style="padding:1rem 2.5rem;border-radius:16px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại</button></div>`:''}
+                </div>
+            </div>
+            <button onclick="micAudioUrl=null;if(fi<V.length-1){fi++;R()}else{fi=0;R()}" style="width:100%;padding:1.25rem;border-radius:20px;background:var(--pri);color:#fff;font-size:1.2rem;font-weight:800;box-shadow:0 4px 20px rgba(244,63,94,.3);margin-bottom:1rem">${fi<V.length-1?'Tiếp theo →':'✅ Hoàn thành Topic!'}</button>`;
+        }
+        html += `<div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-top:1.5rem">
+            ${V.map((_,i)=>`<button onclick="fi=${i};fcFlip=false;qFb=null;tFb=null;tV='';micAudioUrl=null;if(fcM==='quiz')gQ();R()" class="fc-page-btn ${i===fi?'active':''}">${i+1}</button>`).join('')}
+        </div>`;
+    }
+
+    else if(tab === 'la'){
+        if(laIdx !== lastLaIdx) { initLA(); lastLaIdx = laIdx; }
+        const line = storyLines[laIdx];
+        
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <h2 style="font-size:1.8rem;color:var(--sec);margin-bottom:0.75rem">🎧 Listen & Arrange</h2>
+            <p style="color:var(--mut);margin-bottom:2rem">Nghe và sắp xếp các từ thành câu hoàn chỉnh.</p>
+            
+            <button onclick="say('${esc(line.en)}')" style="padding:1.25rem 3rem;border-radius:24px;font-weight:800;font-size:1.3rem;color:#fff;background:var(--pri);box-shadow:0 8px 25px rgba(244,63,94,.3);margin-bottom:2rem">
+                🔊 Nghe câu hỏi
+            </button>
+            
+            <div class="la-area">
+                ${laSelected.length === 0 ? '<span style="color:var(--mut);font-weight:500">Khu vực sắp xếp câu...</span>' : laSelected.map(b => `<div class="la-block" onclick="moveLA(${b.id}, false)">${b.text}</div>`).join('')}
+            </div>
+            
+            <div style="min-height:80px; margin-bottom:2rem;">
+                ${laPool.map(b => `<div class="la-block" onclick="moveLA(${b.id}, true)">${b.text}</div>`).join('')}
+            </div>
+            
+            <div style="display:flex; justify-content:center; gap:1rem;">
+                <button onclick="initLA(); R()" class="sub-btn">🔄 Làm lại</button>
+                <button onclick="checkLA()" style="padding:0.75rem 2rem; border-radius:12px; font-weight:800; background:var(--sec); color:#fff;">Kiểm tra</button>
+            </div>
+            
+            ${laFb !== null ? `<div style="margin-top:2rem;padding:1.5rem;border-radius:16px;background:${laFb?'#ecfdf5':'#fef2f2'};color:${laFb?`var(--suc)`:`var(--err)`};font-weight:800;max-width:800px;margin-left:auto;margin-right:auto">${laFb?'✅ Chính xác!':'❌ Chưa đúng, bạn hãy thử lại nhé!'}</div>` : ''}
+            
+            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(laIdx>0){laIdx--;R()}" class="sub-btn">← Câu trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${laIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(laIdx<storyLines.length-1){laIdx++;R()}" class="sub-btn">Câu sau →</button>
+            </div>
+        </div>`;
+    }
+
+    else if(tab === 'roleplay'){
+        const line = storyLines[rpIdx];
+        let isNarrator = !line.en.startsWith("Sarah:") && !line.en.startsWith("Rose:");
+        let speaker = isNarrator ? 'Narrator' : (line.en.startsWith("Sarah:") ? 'Sarah' : 'Rose');
+        let myTurn = speaker === rpRole;
+
+        html += `<div class="card" style="padding:3rem 2rem">
+            <div style="text-align:center;margin-bottom:2.5rem">
+                <h2 style="font-size:1.8rem;color:var(--warn);margin-bottom:0.75rem">🎭 Interactive Roleplay</h2>
+                <p style="color:var(--mut);margin-bottom:1.5rem">Chọn vai và luyện tập phản xạ giao tiếp.</p>
+                <div style="display:inline-flex; background:#f1f5f9; border-radius:16px; padding:0.5rem">
+                    <button onclick="rpRole='Sarah'; R()" style="padding:0.75rem 2rem; border-radius:12px; font-weight:700; background:${rpRole==='Sarah'?'#fff':'transparent'}; color:${rpRole==='Sarah'?'var(--sec)':'var(--mut)'}; box-shadow:${rpRole==='Sarah'?'0 2px 10px rgba(0,0,0,0.05)':'none'}">Vai Sarah</button>
+                    <button onclick="rpRole='Rose'; R()" style="padding:0.75rem 2rem; border-radius:12px; font-weight:700; background:${rpRole==='Rose'?'#fff':'transparent'}; color:${rpRole==='Rose'?'var(--pri)':'var(--mut)'}; box-shadow:${rpRole==='Rose'?'0 2px 10px rgba(0,0,0,0.05)':'none'}">Vai Rose</button>
+                </div>
+            </div>
+
+            <div class="rp-chat">
+                <div class="rp-msg ${speaker.toLowerCase()}">
+                    ${isNarrator ? line.en : `<strong>${speaker}:</strong> ${line.en.replace(/^(Sarah|Rose):\s*['"]?|['"]?$/g, '')}`}
+                    <div style="font-size:0.95rem; color:inherit; opacity:0.8; margin-top:0.5rem">${line.vi}</div>
+                </div>
+            </div>
+
+            <div style="text-align:center; padding-top:2rem; border-top:2px dashed var(--brd)">
+                ${(!myTurn || isNarrator) ? `
+                    <p style="color:var(--mut); font-weight:600; margin-bottom:1.5rem">Lượt của đối phương. Hãy lắng nghe!</p>
+                    <button onclick="say('${esc(line.en)}')" style="padding:1.25rem 3rem;border-radius:24px;font-weight:800;font-size:1.2rem;color:#fff;background:var(--sec);box-shadow:0 8px 25px rgba(14,165,233,.3)">
+                        ▶️ Nghe đối phương nói
+                    </button>
+                ` : `
+                    <p style="color:var(--warn); font-weight:800; font-size:1.1rem; margin-bottom:1.5rem">Lượt của bạn! Hãy bấm ghi âm để đáp lời.</p>
+                    <button onclick="toggleMic()" style="padding:1.25rem 3rem;border-radius:24px;font-weight:800;font-size:1.2rem;color:#fff;background:${micRec?'var(--err)':'var(--pri)'};box-shadow:${micRec?'0 0 25px rgba(239,68,68,.4)':'0 8px 25px rgba(244,63,94,.3)'}">
+                        ${micRec?'⏹️ Dừng ghi âm':'🎙️ Lượt của bạn - Ghi âm'}
+                    </button>
+                    ${micAudioUrl && !micRec ? `<div style="margin-top:2rem"><button onclick="new Audio('${micAudioUrl}').play()" style="padding:1rem 2.5rem;border-radius:16px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại giọng bạn</button></div>`:''}
+                `}
+            </div>
+
+            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(rpIdx>0){rpIdx--;micAudioUrl=null;R()}" class="sub-btn">← Thoại trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${rpIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(rpIdx<storyLines.length-1){rpIdx++;micAudioUrl=null;R()}" class="sub-btn">Thoại sau →</button>
+            </div>
+        </div>`;
+    }
+
+    else if(tab === 'blind'){
+        const line = storyLines[bsIdx];
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <h2 style="font-size:1.8rem;color:var(--suc);margin-bottom:0.75rem">🙈 Blind Shadowing</h2>
+            <p style="color:var(--mut);margin-bottom:2.5rem">Nghe âm thanh hoặc đọc IPA và tập lặp lại mà không nhìn chữ.</p>
+            
+            <div style="margin-bottom:2.5rem;max-width:800px;margin-left:auto;margin-right:auto">
+                <div style="font-size:1.5rem;color:var(--text);font-family:monospace;background:#f8fafc;display:inline-block;padding:1.5rem 2.5rem;border-radius:16px;border:2px dashed var(--brd);line-height:1.6;word-break:break-word">
+                    ${line.ipa}
+                </div>
+            </div>
+
+            <div style="display:flex;gap:1.5rem;justify-content:center;margin-bottom:3rem">
+                <button onclick="say('${esc(line.en)}')" style="padding:1.25rem 2.5rem;border-radius:20px;background:rgba(16,185,129,.1);color:var(--suc);font-weight:800">🔊 Nghe (Không nhìn chữ)</button>
+            </div>
+
+            <div style="padding-top:3rem;border-top:2px dashed var(--brd)">
+                <button onclick="toggleMic()" style="padding:1.5rem 4rem;border-radius:24px;font-weight:800;font-size:1.3rem;color:#fff;background:${micRec?'var(--err)':'var(--sec)'};box-shadow:${micRec?'0 0 30px rgba(239,68,68,.4)':'0 8px 25px rgba(14,165,233,.3)'}">
+                    ${micRec?'⏹️ Đang ghi âm...':'🎙️ Tự nói lại câu'}
+                </button>
+                ${micAudioUrl && !micRec ? `<div style="margin-top:2.5rem"><button onclick="new Audio('${micAudioUrl}').play()" style="padding:1.25rem 3rem;border-radius:20px;background:#f0fdf4;color:var(--suc);border:2px solid #bbf7d0;font-weight:800">▶️ Nghe lại bản ghi của bạn</button></div>`:''}
+            </div>
+            
+            <div style="margin-top:3rem;">
+                ${bsShow ? `<div style="padding:1.5rem; background:#fff1f2; border-radius:16px; color:var(--pri); font-weight:700; font-size:1.2rem; border:1px solid #fecdd3;">${line.en}</div>` : `<button onclick="bsShow=true;R()" class="sub-btn">👀 Hiển thị đáp án (Văn bản tiếng Anh)</button>`}
+            </div>
+
+            <div style="margin-top:3rem;display:flex;justify-content:center;gap:1.5rem">
+                <button onclick="if(bsIdx>0){bsIdx--;micAudioUrl=null;bsShow=false;R()}" class="sub-btn">← Câu trước</button>
+                <span style="align-self:center;color:var(--mut);font-weight:800">${bsIdx+1} / ${storyLines.length}</span>
+                <button onclick="if(bsIdx<storyLines.length-1){bsIdx++;micAudioUrl=null;bsShow=false;R()}" class="sub-btn">Câu sau →</button>
+            </div>
+        </div>`;
+    }
+
+    else if(tab === 'exercise'){
+        html += `
+        <div class="card">
+            <div style="text-align:center;margin-bottom:2.5rem">
+                <h1 style="color:var(--sec);font-size:2.2rem">📝 Practice Exercises</h1>
+                <p style="color:var(--mut);font-size:1.1rem">Ôn tập lại phần Phát âm và Cấu trúc đã học.</p>
+            </div>
+
+            <h2 style="color:var(--warn);font-size:1.6rem;margin-bottom:1.5rem;border-bottom:2px solid var(--brd);padding-bottom:0.5rem">Phần 1: Pronunciation Check</h2>
+            ${PQ.map((q, i) => `
+                <div style="margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px dashed var(--brd)">
+                    <p style="font-weight:800; font-size:1.15rem; margin-bottom:1rem">${i+1}. ${q.q}</p>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; max-width:700px;">
+                        ${q.o.map((opt, oi) => `
+                            <button class="opt ${pqA[i] !== undefined ? (oi === q.a ? 'ok' : (pqA[i] === oi ? 'no' : '')) : ''}" 
+                                    ${pqA[i] !== undefined ? 'disabled' : ''} 
+                                    onclick="pqA[${i}]=${oi};R()">
+                                ${String.fromCharCode(65+oi)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="exp-box ${pqA[i] !== undefined ? 'show' : ''} ${pqA[i] === q.a ? 'exp-ok' : 'exp-no'}">
+                        ${pqA[i] === q.a ? '✅ Đúng rồi! ' : '❌ Sai rồi! '}${q.exp}
+                    </div>
+                </div>
+            `).join('')}
+
+            <h2 style="color:var(--pri);font-size:1.6rem;margin-top:3rem;margin-bottom:1.5rem;border-bottom:2px solid var(--brd);padding-bottom:0.5rem">Phần 2: Key Structures Check</h2>
+            ${KSQ.map((q, i) => `
+                <div style="margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px dashed var(--brd)">
+                    <p style="font-weight:800; font-size:1.15rem; margin-bottom:1rem">${i+1}. ${q.q}</p>
+                    <div style="display:flex; flex-direction:column; gap:0.5rem; max-width:700px;">
+                        ${q.o.map((opt, oi) => `
+                            <button class="opt ${ksqA[i] !== undefined ? (oi === q.a ? 'ok' : (ksqA[i] === oi ? 'no' : '')) : ''}" 
+                                    ${ksqA[i] !== undefined ? 'disabled' : ''} 
+                                    onclick="ksqA[${i}]=${oi};R()">
+                                ${String.fromCharCode(65+oi)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="exp-box ${ksqA[i] !== undefined ? 'show' : ''} ${ksqA[i] === q.a ? 'exp-ok' : 'exp-no'}">
+                        ${ksqA[i] === q.a ? '✅ Chính xác! ' : '❌ Sai rồi! '}${q.exp}
+                    </div>
+                </div>
+            `).join('')}
+
+            <div style="text-align:right">
+                <button onclick="pqA={}; ksqA={}; R()" class="sub-btn" style="padding:1rem 2rem; font-size:1rem; margin-top:1rem">🔄 Làm lại tất cả bài tập</button>
+            </div>
+        </div>`;
+    }
+    
+    else if(tab === 'game'){
+        html += `<div class="card" style="text-align:center;padding:3rem 2rem">
+            <div style="display:inline-flex; background:#f1f5f9; border-radius:16px; padding:0.5rem; margin-bottom:2.5rem;">
+                <button onclick="gameTab='matching'; if(!gameCards.length) initGameMatching(); R()" style="padding:0.75rem 2rem; border-radius:12px; font-weight:700; background:${gameTab==='matching'?'#fff':'transparent'}; color:${gameTab==='matching'?'var(--sec)':'var(--mut)'}; box-shadow:${gameTab==='matching'?'0 2px 10px rgba(0,0,0,0.05)':'none'}">Matching</button>
+                <button onclick="gameTab='react'; initLR(); R()" style="padding:0.75rem 2rem; border-radius:12px; font-weight:700; background:${gameTab==='react'?'#fff':'transparent'}; color:${gameTab==='react'?'var(--sec)':'var(--mut)'}; box-shadow:${gameTab==='react'?'0 2px 10px rgba(0,0,0,0.05)':'none'}">Listen & React</button>
+            </div>`;
+
+        if(gameTab === 'matching'){
+            if(!gameCards.length) initGameMatching();
+            html += `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                    <h2 style="font-size:1.8rem;color:var(--sec);font-weight:800">🎮 Matching Game</h2>
+                    <button onclick="initGameMatching();R()" class="sub-btn">🔄 Chơi lại</button>
+                </div>
+                <p style="color:var(--mut);margin-bottom:2.5rem">Ghép nối đúng từ tiếng Anh với nghĩa tiếng Việt!</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:1.25rem">
+                    ${gameCards.map((c, i)=>`<div onclick="handleGameClick(${i})" class="game-card ${gameSelected.includes(i)?'selected':''} ${gameMatched.includes(i)?'matched':''}">${c.text}</div>`).join('')}
+                </div>
+                ${gameMatched.length === gameCards.length ? `<div style="margin-top:3rem;padding:2rem;background:#ecfdf5;border-radius:24px;color:#047857;font-weight:800;font-size:1.5rem">🎉 Tuyệt vời! Bạn đã hoàn thành!</div>` : ''}
+            `;
+        } else {
+            if(!lrWord) initLR();
+            html += `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+                    <h2 style="font-size:1.8rem;color:var(--pri);font-weight:800">⚡ Listen & React</h2>
+                    <div style="font-weight:800; font-size:1.2rem; color:var(--warn)">Điểm: ${lrScore}</div>
+                </div>
+                <p style="color:var(--mut);margin-bottom:2rem">Nghe âm thanh và chọn tốc độ nghĩa tương ứng trong 5 giây!</p>
+                
+                <div style="font-size:3rem; font-weight:800; color:${lrTimeLeft <= 2 ? 'var(--err)' : 'var(--pri)'}; margin-bottom:2rem;">⏳ ${lrTimeLeft}s</div>
+                
+                <button onclick="say('${esc(lrWord.en)}')" style="padding:1rem 2.5rem;border-radius:24px;font-weight:800;font-size:1.2rem;color:var(--pri);background:rgba(244,63,94,.1);margin-bottom:2.5rem" ${lrFb !== null ? 'disabled' : ''}>
+                    🔊 Nghe lại từ này
+                </button>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;max-width:700px;margin:0 auto">
+                    ${lrOpts.map((opt) => {
+                        let btnStyle = 'padding:1.5rem; border-radius:16px; border:2px solid var(--brd); background:#fff; font-weight:700; font-size:1.1rem; color:var(--text); transition:all 0.2s;';
+                        if (lrFb !== null) {
+                            if (opt.id === lrWord.id) {
+                                btnStyle = 'padding:1.5rem; border-radius:16px; border:2px solid var(--suc); background:#ecfdf5; font-weight:700; font-size:1.1rem; color:var(--suc);';
+                            } else if (opt.id === lrClicked && !lrFb) {
+                                btnStyle = 'padding:1.5rem; border-radius:16px; border:2px solid var(--err); background:#fef2f2; font-weight:700; font-size:1.1rem; color:var(--err);';
+                            } else {
+                                btnStyle += 'opacity:0.5;';
+                            }
+                        }
+                        return `<button onclick="checkLR(${opt.id})" style="${btnStyle}" ${lrFb !== null ? 'disabled' : ''}>
+                            ${opt.vi}
+                        </button>`;
+                    }).join('')}
+                </div>
+                
+                ${lrFb !== null ? `<div style="margin-top:2rem; font-weight:800; font-size:1.3rem; color:${lrFb ? 'var(--suc)' : 'var(--err)'}">${lrFb ? '🎉 Chính xác! +1 Điểm' : (lrClicked === null ? '⏳ Đã hết giờ!' : '❌ Rất tiếc, sai rồi!')}</div>` : ''}
+            `;
+        }
+        html += `</div>`;
+    }
+    
+    app.innerHTML = html;
+    
+    if(tab === 'flashcard' && fcM === 'type') document.getElementById('fcTypeInp')?.focus();
+}
+
+function chkFcType(){const i = document.getElementById('fcTypeInp'); tV = i ? i.value : ''; tFb = norm(tV) === norm(V[fi].en); setTimeout(()=>{if(tFb){if(fi<V.length-1){fi++; tFb=null; tV=''; R()}else{fcM='say'; fi=0; tFb=null; tV=''; R()}}}, 1200); R();}
+
+function handleGameClick(idx){if(gameMatched.includes(idx) || gameSelected.includes(idx)) return; gameSelected.push(idx); R(); if(gameSelected.length === 2){const [i1, i2] = gameSelected; const c1 = gameCards[i1], c2 = gameCards[i2]; setTimeout(()=>{if(c1.id === c2.id && c1.type !== c2.type){gameMatched.push(i1, i2); if(c1.type === 'en') say(c1.text); else say(c2.text);} gameSelected = []; R();}, 600);}}
+
+R();
+</script>
+</body>
+</html>
